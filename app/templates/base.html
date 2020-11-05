@@ -51,7 +51,6 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
 
     {% if current_user.is_admin == True %}
 
-    <a href="{{ url_for('create_admin') }}" class="w3-bar-item w3-button">Create new Admin</a>
     <a href="{{ url_for('users') }}" class="w3-bar-item w3-button">Users</a>
 
     {% endif %}

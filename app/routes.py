@@ -42,16 +42,8 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title="Register", form=form)
-
-
-
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
 
 
 
@@ -65,19 +57,8 @@ def user(username):
 
 @app.route('/users')
 def users():
+    
     return render_template('users.html', title="Users")
-
-
-
-@app.route('/create_admin', methods=['GET', 'POST'])
-def create_admin():
-    if request.method == 'POST':
-        new_admin = User(email=request.form['email'], password=request.form['password'], is_admin = True)
-        db.session.add(new_admin)
-        db.session.commit()
-        flash('New admin added')
-    return render_template('create_admin.html', title="Create Admin")
-
 
 
 
@@ -114,3 +95,12 @@ def newTraining():
 @app.route('/trainingList')
 def trainingList():
     return render_template("trainingList.html", title="Training List")
+
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
