@@ -4,7 +4,6 @@ from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-import sqlite3 as sql
 
 
 @app.route('/')
@@ -64,22 +63,9 @@ def user(username):
 
 
 
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html', title="Dashboard")
-
-
-
 @app.route('/users')
 def users():
-    con = sql.connect("app.db")
-    con.row_factory = sql.Row
-   
-    cur = con.cursor()
-    cur.execute("select * from user")
-   
-    rows = cur.fetchall();
-    return render_template('users.html', title="Users", rows=rows)
+    return render_template('users.html', title="Users")
 
 
 
@@ -92,3 +78,39 @@ def create_admin():
         flash('New admin added')
     return render_template('create_admin.html', title="Create Admin")
 
+
+
+
+@app.route('/newNotebook')
+def newNotebook():
+    return render_template("newNotebook.html", title="New Notebook")
+
+
+
+@app.route('/notebookList')
+def notebookList():
+    return render_template("notebookList.html", title="Notebook List")
+
+
+
+@app.route('/newEndpoint')
+def newEndpoint():
+    return render_template("newEndpoint.html", title="New Endpoint")
+
+
+
+@app.route('/endpointList')
+def endpointList():
+    return render_template("endpointList.html", title="Endpoint List")
+
+
+
+@app.route('/newTraining')
+def newTraining():
+    return render_template("newTraining.html", title="New Training")
+
+
+
+@app.route('/trainingList')
+def trainingList():
+    return render_template("trainingList.html", title="Training List")
