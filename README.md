@@ -31,3 +31,8 @@ Now in this env install flask:
 
     $ pipenv install flask
     
+
+Running It
+----------
+
+    $ python -m flask run
