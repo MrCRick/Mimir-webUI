@@ -15,26 +15,18 @@ In your command line, type:
 
 pip: 
 
-.. code-block:: bash
-
     $ sudo apt install python-pip
     
 pipenv:
-
-.. code-block:: bash
 
     $ pip install pipenv
    
 
 In your directory create a virtual env with pipenv
 
-.. code-block:: bash
-
     $ pip install pipenv
     
 Now in this env u can install flask:
-
-.. code-block:: bash
 
     $ pipenv install flask
     
