@@ -26,7 +26,7 @@ In your directory create a virtual env with pipenv
 
     $ pip install pipenv
     
-Now in this env u can install flask:
+Now in this env install flask:
 
     $ pipenv install flask
     
