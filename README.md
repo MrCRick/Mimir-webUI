@@ -11,6 +11,7 @@ You need to install:
 
 anaconda or miniconda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 
+
 In your command line, type:
 
 pip: 
