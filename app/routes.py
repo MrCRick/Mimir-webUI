@@ -4,12 +4,11 @@ from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-
+import sqlite3 as sql
 
 
 @app.route('/')
 @app.route('/index')
-@login_required
 def index():
     return render_template('index.html', title="Home Page")
 
@@ -68,3 +67,28 @@ def user(username):
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html', title="Dashboard")
+
+
+
+@app.route('/users')
+def users():
+    con = sql.connect("app.db")
+    con.row_factory = sql.Row
+   
+    cur = con.cursor()
+    cur.execute("select * from user")
+   
+    rows = cur.fetchall();
+    return render_template('users.html', title="Users", rows=rows)
+
+
+
+@app.route('/create_admin', methods=['GET', 'POST'])
+def create_admin():
+    if request.method == 'POST':
+        new_admin = User(email=request.form['email'], password=request.form['password'], is_admin = True)
+        db.session.add(new_admin)
+        db.session.commit()
+        flash('New admin added')
+    return render_template('create_admin.html', title="Create Admin")
+
