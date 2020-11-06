@@ -1,11 +1,12 @@
 from app import db, login
+from flask import abort
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, current_user
 from flask_admin.contrib.sqla import ModelView
 
 
 
-class User(UserMixin, db.Model):
+class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -14,7 +15,7 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return '<Users {}>'.format(self.username)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -25,4 +26,21 @@ class User(UserMixin, db.Model):
 
     @login.user_loader
     def load_user(id):
-    	return User.query.get(int(id))
+    	return Users.query.get(int(id))
+
+
+
+
+class Controller(ModelView):
+    
+    def is_accessible(self):
+        if current_user.is_admin == True:
+            return current_user.is_authenticated
+        else:
+            return abort(404)
+
+
+    def not_auth(self):
+        return "you are not abilitated to use this admin panel control"
+
+

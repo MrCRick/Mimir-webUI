@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 style="text-align: center;">Register now!</h1>
+    <h1>Create New User!</h1>
 {% endblock %}
 
     {% block container %} 
     <br>
-    <div class="col-md-6 col-md-offset-4">
     <form action="" method="post", novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -37,7 +36,8 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
+        <p>{{ form.enable() }} {{ form.enable.label }}</p>
+        <p>{{ form.is_admin() }} {{ form.is_admin.label }}</p>
         <p style="color: black;">{{ form.submit() }}</p>
     </form>
-    </div>
 {% endblock %}
