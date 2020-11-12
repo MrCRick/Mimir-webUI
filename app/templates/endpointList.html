@@ -6,5 +6,40 @@
 {% endblock %}
 
 {% block container %}
+	<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
 
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+
+	<br>
+	<div>
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Update Time</th>
+				<th>Training_id</th>
+			</tr>
+			<tr>
+				{% for notebook in notebooks %}
+				<td>{notebook.id}</td>
+				<td>{notebook.name}</td>
+				<td>{notebook.update_time}</td>
+				{% endfor %}
+			</tr>
+		</table>
+	</div>
 {% endblock %}

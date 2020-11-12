@@ -1,10 +1,11 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify, make_response
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import Users
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-
+import requests
+import json
 
 
 @app.route('/')
@@ -62,9 +63,12 @@ def newNotebook():
 
 
 
-@app.route('/notebookList')
+@app.route('/notebookList', methods=['GET'])
 def notebookList():
-    return render_template("notebookList.html", title="Notebook List")
+    res = requests.get(f'{app.config["APISERVER"]}/api/notebook').content
+    all_notebook = json.loads(res)
+
+    return render_template("notebookList.html", title="Notebook List", notebooks=all_notebook)
 
 
 

@@ -37,7 +37,7 @@ class Controller(ModelView):
         if current_user.is_admin == True:
             return current_user.is_authenticated
         else:
-            return abort(404)
+            return abort(403)
 
 
     def not_auth(self):
