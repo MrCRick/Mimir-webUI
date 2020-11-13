@@ -57,10 +57,10 @@ def user(username):
 
 
 
-@app.route('/newNotebook', methods=['GET', 'POST'])
+@app.route('/newNotebook', methods=['POST'])
 def newNotebook():
     form = NewNotebookForm()
-    notebook = {"name": ""}
+    notebook = {"name": form.name.data}
     response = requests.post(f'{app.config["APISERVER"]}/api/notebook', data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
 
     print(response.text)
