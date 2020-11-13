@@ -3,29 +3,31 @@
 
 {% block content%}
 
-	<h2>Here you can see your notebook list</h2>
+	<h2>NOTEBOOK LIST</h2>
 
 {% endblock %}
 
 
 {% block container %}
+<head>
 	<style>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
+		table {
+			font-family: arial, sans-serif;
+  			border-collapse: collapse;
+  			width: 100%;
+		}
 
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
+		td, th {
+  			border: 1px solid #dddddd;
+  			text-align: left;
+  			padding: 8px;
+		}
 
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-</style>
+		tr:nth-child(even) {
+			background-color: #dddddd;
+		}
+	</style>
+</head>
 
 	<br>
 	<div>
@@ -35,11 +37,11 @@ tr:nth-child(even) {
 				<th>Name</th>
 				<th>Update Time</th>
 			</tr>
-			{% for notebook in notebooks %}
+			{% for notebook in notebooks['value'] %}
 			<tr>
-				<td>{{notebook_id}}</td>
-				<td>{{notebook_name}}</td>
-				<td>{{notebook_update_time}}</td>
+				<td>{{ notebook['notebook_id'] }}</td>
+				<td>{{ notebook['notebook_name'] }}</td>
+				<td>{{ notebook['createdDate'] }}</td>
 			</tr>
 			{% endfor %}
 		</table>

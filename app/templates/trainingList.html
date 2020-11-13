@@ -3,29 +3,31 @@
 
 {% block content%}
 
-		<h2>Here you can see your training list</h2>
+		<h2>TRAINING LIST</h2>
 
 {% endblock %}
 
 
 {% block container %}
+<head>
 	<style>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
+		table {
+			font-family: arial, sans-serif;
+  			border-collapse: collapse;
+  			width: 100%;
+		}
 
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
+		td, th {
+  			border: 1px solid #dddddd;
+  			text-align: left;
+  			padding: 8px;
+		}
 
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-</style>
+		tr:nth-child(even) {
+			background-color: #dddddd;
+		}
+	</style>
+</head>
 
 	<br>
 	<div>
@@ -35,13 +37,13 @@ tr:nth-child(even) {
 				<th>Name</th>
 				<th>Update Time</th>
 			</tr>
+			{% for training in trainings['value'] %}
 			<tr>
-				{% for notebook in notebooks %}
-				<td>{notebook_id}</td>
-				<td>{notebook_name}</td>
-				<td>{notebook_update_time}</td>
-				{% endfor %}
+				<td>{{ training['training_id'] }}</td>
+				<td>{{ training['training_name'] }}</td>
+				<td>{{ training['createdDate'] }}</td>
 			</tr>
+			{% endfor %}
 		</table>
 	</div>
 {% endblock %}

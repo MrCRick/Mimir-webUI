@@ -67,7 +67,6 @@ def newNotebook():
 def notebookList():
     res = requests.get(f'{app.config["APISERVER"]}/api/notebook').content
     all_notebook = json.loads(res)
-
     return render_template("notebookList.html", title="Notebook List", notebooks=all_notebook)
 
 
@@ -80,7 +79,9 @@ def newEndpoint():
 
 @app.route('/endpointList')
 def endpointList():
-    return render_template("endpointList.html", title="Endpoint List")
+    res = requests.get(f'{app.config["APISERVER"]}/api/endpoints').content
+    all_endpoint = json.loads(res)
+    return render_template("endpointList.html", title="Endpoint List", endpoints=all_endpoint)
 
 
 
@@ -92,7 +93,9 @@ def newTraining():
 
 @app.route('/trainingList')
 def trainingList():
-    return render_template("trainingList.html", title="Training List")
+    res = requests.get(f'{app.config["APISERVER"]}/api/training').content
+    all_training= json.loads(res)
+    return render_template("trainingList.html", title="Training List", trainings=all_training)
 
 
 

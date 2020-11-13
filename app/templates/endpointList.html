@@ -2,27 +2,31 @@
 
 
 {% block content%}
-		<h2>Here you can see your endpoint list</h2>
+
+		<h2>ENDPOINT LIST</h2>
+		
 {% endblock %}
 
 {% block container %}
+<head>
 	<style>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
+		table {
+			font-family: arial, sans-serif;
+  			border-collapse: collapse;
+  			width: 100%;
+		}
 
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
+		td, th {
+  			border: 1px solid #dddddd;
+  			text-align: left;
+  			padding: 8px;
+		}
 
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-</style>
+		tr:nth-child(even) {
+			background-color: #dddddd;
+		}
+	</style>
+</head>
 
 	<br>
 	<div>
@@ -34,11 +38,14 @@ tr:nth-child(even) {
 				<th>Training_id</th>
 			</tr>
 			<tr>
-				{% for notebook in notebooks %}
-				<td>{notebook.id}</td>
-				<td>{notebook.name}</td>
-				<td>{notebook.update_time}</td>
-				{% endfor %}
+				{% for endpoint in endpoints['value'] %}
+			<tr>
+				<td>{{ endpoint['endpoint_id'] }}</td>
+				<td>{{ endpoint['endpoint_name'] }}</td>
+				<td>{{ endpoint['createdDate'] }}</td>
+				<td>{{ endpoint['training_id'] }}</td>
+			</tr>
+			{% endfor %}
 			</tr>
 		</table>
 	</div>
