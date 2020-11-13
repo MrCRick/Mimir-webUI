@@ -10,8 +10,10 @@ from flask_admin.contrib.sqla import ModelView
 
 app = Flask(__name__)
 admin = Admin(app, name="Control Panel")
+
 app.config.from_object(Config)
 app.config['APISERVER'] = 'http://127.0.0.1:5000'
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)

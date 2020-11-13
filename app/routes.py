@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, make_response
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, NewNotebookForm
 from app.models import Users
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -57,9 +57,14 @@ def user(username):
 
 
 
-@app.route('/newNotebook')
+@app.route('/newNotebook', methods=['GET', 'POST'])
 def newNotebook():
-    return render_template("newNotebook.html", title="New Notebook")
+    form = NewNotebookForm()
+    notebook = {"name": ""}
+    response = requests.post(f'{app.config["APISERVER"]}/api/notebook', data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+
+    print(response.text)
+    return render_template("newNotebook.html", title="New Notebook", form=form)
 
 
 
@@ -67,6 +72,7 @@ def newNotebook():
 def notebookList():
     res = requests.get(f'{app.config["APISERVER"]}/api/notebook').content
     all_notebook = json.loads(res)
+
     return render_template("notebookList.html", title="Notebook List", notebooks=all_notebook)
 
 

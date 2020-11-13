@@ -12,14 +12,16 @@
 {% block container %}
 	<br>
 	<div class="col-md-6 col-md-offset-3">
-		<form action="/" method="POST">
-			
-			 <div class="form-group">
-  				<label>Name:</label>
-  				<input type="text" class="form-control" name="notebook">
-			</div>
-			<button form="form-control" style="text-align: left; color: black; ">Create</button>
+		<form action="/newNotebook" method="post">
+			{{ form.hidden_tag() }}
+			<p>
+  				{{ form.name.label }}<br>
+            	{{ form.name(size=32) }}<br>
+			</p>
+			<p>{{ form.submit() }}</p>
 		</form>
 	</div>
+
+	
 
 {% endblock %}
