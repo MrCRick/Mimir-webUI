@@ -36,6 +36,9 @@
 				<th>Name</th>
 				<th>Update Time</th>
 				<th>Training_id</th>
+				<th>Training_name</th>
+				<th>Training_update_time</th>
+
 			</tr>
 			<tr>
 				{% for endpoint in endpoints['value'] %}
@@ -43,7 +46,9 @@
 				<td>{{ endpoint['endpoint_id'] }}</td>
 				<td>{{ endpoint['endpoint_name'] }}</td>
 				<td>{{ endpoint['createdDate'] }}</td>
-				<td>{{ endpoint['training_id'] }}</td>
+				<td>{{ endpoint.training.id }}</td>
+				<td>{{ endpoint.training.name }}</td>
+				<td>{{ endpoint.training.created_date }}</td>
 			</tr>
 			{% endfor %}
 			</tr>

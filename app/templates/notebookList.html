@@ -36,12 +36,16 @@
 				<th>ID</th>
 				<th>Name</th>
 				<th>Update Time</th>
+				<th>Delete</th>
+				<th>Update</th>
 			</tr>
 			{% for notebook in notebooks['value'] %}
 			<tr>
-				<td>{{ notebook['notebook_id'] }}</td>
-				<td>{{ notebook['notebook_name'] }}</td>
-				<td>{{ notebook['createdDate'] }}</td>
+				<td>{{ notebook['id'] }}</td>
+				<td>{{ notebook['name'] }}</td>
+				<td>{{ notebook['created_date'] }}</td>
+				<td><a href="/deleteNotebook"><button>Delete</button></a></td>
+				<td><a href="/updateNotebook"><button>Update</button></a></td>
 			</tr>
 			{% endfor %}
 		</table>

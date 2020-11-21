@@ -4,20 +4,19 @@
 {% block content%}
 
 <div class="row">
-	<h2 style="text-align: center;">CREATE TRAINING</h2>
+	<h2 style="text-align: center;">DELETE NOTEBOOK</h2>
 </div>
 
 {% endblock %}
 
-
 {% block container %}
 	<br>
 	<div class="col-md-6 col-md-offset-3">
-		<form action="/newTraining" method="post">
+		<form action="/deleteNotebook" method="delete">
 			{{ form.hidden_tag() }}
 			<p>
-  				{{ form.name.label }}<br>
-            	{{ form.name(size=32) }}<br>
+  				{{ form.id.label }}<br>
+            	{{ form.id(size=32) }}<br>
 			</p>
 			<p>{{ form.submit() }}</p>
 		</form>
@@ -33,5 +32,7 @@
 		{% endwith %}
 
 	</div>
+
+	
 
 {% endblock %}

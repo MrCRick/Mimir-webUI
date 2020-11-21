@@ -35,13 +35,15 @@
 			<tr>
 				<th>ID</th>
 				<th>Name</th>
+				<th>Endpoint_count</th>
 				<th>Update Time</th>
 			</tr>
 			{% for training in trainings['value'] %}
 			<tr>
-				<td>{{ training['training_id'] }}</td>
-				<td>{{ training['training_name'] }}</td>
-				<td>{{ training['createdDate'] }}</td>
+				<td>{{ training['id'] }}</td>
+				<td>{{ training['name'] }}</td>
+				<td>{{ training['endpoints_count'] }}</td>
+				<td>{{ training['created_date'] }}</td>
 			</tr>
 			{% endfor %}
 		</table>

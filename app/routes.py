@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, make_response
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, NewNotebookForm
+from app.forms import LoginForm, RegistrationForm, NewNotebookForm, DeleteNotebookForm, NewTrainingForm, NewEndpointForm
 from app.models import Users
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -57,13 +57,20 @@ def user(username):
 
 
 
-@app.route('/newNotebook', methods=['POST'])
+@app.route('/newNotebook', methods=['GET','POST'])
 def newNotebook():
     form = NewNotebookForm()
-    notebook = {"name": form.name.data}
-    response = requests.post(f'{app.config["APISERVER"]}/api/notebook', data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+    if form.validate_on_submit():
+        notebook = {"name" : form.name.data}
+        response = requests.post(f'{app.config["APISERVER"]}/api/notebook', data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
 
-    print(response.text)
+        if response.status_code == 201:
+            flash(f'Notebook created!')
+        else:
+            flash(f'Error..')
+        
+        print(response.status_code)
+        print(response.text)
     return render_template("newNotebook.html", title="New Notebook", form=form)
 
 
@@ -72,14 +79,43 @@ def newNotebook():
 def notebookList():
     res = requests.get(f'{app.config["APISERVER"]}/api/notebook').content
     all_notebook = json.loads(res)
-
     return render_template("notebookList.html", title="Notebook List", notebooks=all_notebook)
 
 
 
-@app.route('/newEndpoint')
+@app.route('/deleteNotebook', methods=['GET', 'DELETE'])
+def deleteNotebook():
+    form = DeleteNotebookForm()
+    if form.validate_on_submit():
+        notebook = {'ID' : form.id.data}
+        res = requests.delete(f'{app.config["APISERVER"]}/api/notebook/<form.id.data>/',data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+
+        if res.status_code == 200:
+            flash(f'Notebook eliminated!')
+        else:
+            flash(f'Error..')
+
+        print(res.status_code)
+        print(res.content)
+    return render_template("deleteNotebook.html", title="Delete Notebook", form=form)
+
+
+
+@app.route('/newEndpoint', methods=['GET','POST'])
 def newEndpoint():
-    return render_template("newEndpoint.html", title="New Endpoint")
+    form = NewEndpointForm()
+    if form.validate_on_submit():
+        endpoint = {"name" : form.name.data, "trining_id": form.training_id.data}
+        response = requests.post(f'{app.config["APISERVER"]}/api/endpoints', data=json.dumps(endpoint), headers={'Content-Type': 'application/json'})
+
+        if response.status_code == 201:
+            flash(f'Endpoint created!')
+        else:
+            flash(f'Error..')
+
+        print(response.status_code)
+        print(response.text)
+    return render_template("newEndpoint.html", title="New Endpoint", form=form)
 
 
 
@@ -91,9 +127,21 @@ def endpointList():
 
 
 
-@app.route('/newTraining')
+@app.route('/newTraining', methods=['GET', 'POST'])
 def newTraining():
-    return render_template("newTraining.html", title="New Training")
+    form = NewTrainingForm()
+    if form.validate_on_submit():
+        training = {"name" : form.name.data}
+        response = requests.post(f'{app.config["APISERVER"]}/api/training', data=json.dumps(training), headers={'Content-Type': 'application/json'})
+
+        if response.status_code == 201:
+            flash(f'Training created!')
+        else:
+            flash(f'Error..')
+
+        print(response.status_code)
+        print(response.text)
+    return render_template("newTraining.html", title="New Training", form=form)
 
 
 

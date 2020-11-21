@@ -36,3 +36,34 @@ class RegistrationForm(FlaskForm):
 class NewNotebookForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     submit = SubmitField('Create')
+
+
+
+class DeleteNotebookForm(FlaskForm):
+    id = StringField('ID', validators=[DataRequired()])
+    submit = SubmitField('Delete')
+
+
+
+class NewTrainingForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    submit = SubmitField('Create')
+
+
+
+class DeleteTrainingForm(FlaskForm):
+    id = StringField('ID', validators=[DataRequired()])
+    submit = SubmitField('Delete')
+
+
+
+class NewEndpointForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    training_id = StringField('Training_id', validators=[DataRequired()])
+    submit = SubmitField('Create')
+
+
+
+class DeleteEndpointForm(FlaskForm):
+    id = StringField('ID', validators=[DataRequired()])
+    submit = SubmitField('Delete')
