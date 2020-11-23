@@ -40,7 +40,7 @@ class NewNotebookForm(FlaskForm):
 
 
 class DeleteNotebookForm(FlaskForm):
-    id = StringField('ID', validators=[DataRequired()])
+    notebook_id = StringField('ID', validators=[DataRequired()])
     submit = SubmitField('Delete')
 
 
@@ -52,8 +52,15 @@ class NewTrainingForm(FlaskForm):
 
 
 class DeleteTrainingForm(FlaskForm):
-    id = StringField('ID', validators=[DataRequired()])
+    training_id = StringField('ID', validators=[DataRequired()])
     submit = SubmitField('Delete')
+
+
+
+class UpdateTrainingForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    training_id = StringField('Training_id', validators=[DataRequired()])
+    submit = SubmitField('Update')
 
 
 

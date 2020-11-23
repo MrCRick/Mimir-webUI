@@ -1,6 +1,6 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, make_response
+from flask import render_template, flash, redirect, url_for, request, jsonify, make_response, abort
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, NewNotebookForm, DeleteNotebookForm, NewTrainingForm, NewEndpointForm
+from app.forms import LoginForm, RegistrationForm, NewNotebookForm, DeleteNotebookForm, NewTrainingForm, NewEndpointForm, DeleteTrainingForm, UpdateTrainingForm
 from app.models import Users
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -57,29 +57,40 @@ def user(username):
 
 
 
+#notebook = {"name":"pippo", "id":"12345"}
+
+#response = requests.get("http://0.0.0.0:5000/api/notebooks", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+#response = requests.get("http://0.0.0.0:5000/api/notebook/12345", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+#response = requests.post("http://0.0.0.0:5000/api/notebook/12345", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+#response = requests.put("http://0.0.0.0:5000/api/notebook/12345", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+#response = requests.delete("http://0.0.0.0:5000/api/notebook/12345", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+
+
+
 @app.route('/newNotebook', methods=['GET','POST'])
 def newNotebook():
     form = NewNotebookForm()
     if form.validate_on_submit():
         notebook = {"name" : form.name.data}
-        response = requests.post(f'{app.config["APISERVER"]}/api/notebook', data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+        res = requests.post(f'{app.config["APISERVER"]}/api/notebook', data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
 
-        if response.status_code == 201:
+        if res.status_code == 201:
             flash(f'Notebook created!')
         else:
             flash(f'Error..')
         
-        print(response.status_code)
-        print(response.text)
     return render_template("newNotebook.html", title="New Notebook", form=form)
 
 
 
 @app.route('/notebookList', methods=['GET'])
 def notebookList():
-    res = requests.get(f'{app.config["APISERVER"]}/api/notebook').content
-    all_notebook = json.loads(res)
-    return render_template("notebookList.html", title="Notebook List", notebooks=all_notebook)
+    if current_user.enable:
+        res = requests.get(f'{app.config["APISERVER"]}/api/notebook').content
+        all_notebook = json.loads(res)
+        return render_template("notebookList.html", title="Notebook List", notebooks=all_notebook)
+    else:
+        return abort(404)
 
 
 
@@ -87,16 +98,14 @@ def notebookList():
 def deleteNotebook():
     form = DeleteNotebookForm()
     if form.validate_on_submit():
-        notebook = {'ID' : form.id.data}
-        res = requests.delete(f'{app.config["APISERVER"]}/api/notebook/<form.id.data>/',data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
+        notebook = {'ID' : form.notebook_id.data}
+        res = requests.delete(f'{app.config["APISERVER"]}/api/notebook/<form.notebook_id.data>/',data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
 
         if res.status_code == 200:
             flash(f'Notebook eliminated!')
         else:
             flash(f'Error..')
 
-        print(res.status_code)
-        print(res.content)
     return render_template("deleteNotebook.html", title="Delete Notebook", form=form)
 
 
@@ -106,15 +115,14 @@ def newEndpoint():
     form = NewEndpointForm()
     if form.validate_on_submit():
         endpoint = {"name" : form.name.data, "trining_id": form.training_id.data}
-        response = requests.post(f'{app.config["APISERVER"]}/api/endpoints', data=json.dumps(endpoint), headers={'Content-Type': 'application/json'})
+        res = requests.post(f'{app.config["APISERVER"]}/api/endpoints/endpoint', data=json.dumps(endpoint), headers={'Content-Type': 'application/json'})
 
-        if response.status_code == 201:
+        if res.status_code == 201:
             flash(f'Endpoint created!')
         else:
             flash(f'Error..')
 
-        print(response.status_code)
-        print(response.text)
+
     return render_template("newEndpoint.html", title="New Endpoint", form=form)
 
 
@@ -129,27 +137,65 @@ def endpointList():
 
 @app.route('/newTraining', methods=['GET', 'POST'])
 def newTraining():
-    form = NewTrainingForm()
-    if form.validate_on_submit():
-        training = {"name" : form.name.data}
-        response = requests.post(f'{app.config["APISERVER"]}/api/training', data=json.dumps(training), headers={'Content-Type': 'application/json'})
+    if current_user.enable:
+        form = NewTrainingForm()
+        if form.validate_on_submit():
+            training = {"name" : form.name.data}
+            res = requests.post(f'{app.config["APISERVER"]}/api/training', data=json.dumps(training), headers={'Content-Type': 'application/json'})
 
-        if response.status_code == 201:
-            flash(f'Training created!')
-        else:
-            flash(f'Error..')
-
-        print(response.status_code)
-        print(response.text)
-    return render_template("newTraining.html", title="New Training", form=form)
+            if res.status_code == 201:
+                flash(f'Training created!')
+            else:
+                flash(f'Error..')
+        return render_template("newTraining.html", title="New Training", form=form) 
+    else:
+        return abort(404)
 
 
 
 @app.route('/trainingList')
 def trainingList():
-    res = requests.get(f'{app.config["APISERVER"]}/api/training').content
-    all_training= json.loads(res)
-    return render_template("trainingList.html", title="Training List", trainings=all_training)
+    if current_user.enable:
+        res = requests.get(f'{app.config["APISERVER"]}/api/training').content
+        all_training= json.loads(res)
+        return render_template("trainingList.html", title="Training List", trainings=all_training)
+    else:
+        return abort(404)
+
+
+
+@app.route('/deleteTraining', methods=['GET', 'DELETE'])
+def deleteTraining():
+    if current_user.enable:
+        form = DeleteTrainingForm()
+        if form.validate_on_submit():
+            training = {'ID' : form.training_id.data}
+            res = requests.delete(f'{app.config["APISERVER"]}/api/training/<form.training_id.data>/',data=json.dumps(training), headers={'Content-Type': 'application/json'})
+
+            if res.status_code == 200:
+                flash(f'Training eliminated!')
+            else:
+                flash(f'Error..')
+        return render_template("deleteTraining.html", title="Delete Training", form=form)
+    else:
+        return abort(404)
+
+
+
+@app.route('/updateTraining', methods=['GET', 'PUT'])
+def updateTraining():
+    form = UpdateTrainingForm()
+    if form.validate_on_submit():
+        training = {'name' : form.name.data, 'id':form.training_id.data}
+        res = requests.put(f'{app.config["APISERVER"]}/api/training/<form.training_id.data>/',data=json.dumps(training), headers={'Content-Type': 'application/json'})
+
+        if res.status_code == 200:
+            flash(f'Training eliminated!')
+        else:
+            flash(f'Error..')
+
+    return render_template("updateTraining.html", title="Update Training", form=form)
+
 
 
 
