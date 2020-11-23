@@ -27,10 +27,6 @@ In your directory create a virtual env with pipenv
 
     $ pipenv shell
     
-Now in this env install flask:
-
-    $ pipenv install flask
-    
 
 Running It
 ----------
