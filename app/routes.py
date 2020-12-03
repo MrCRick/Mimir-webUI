@@ -57,33 +57,6 @@ def user(username):
 
 
 
-#notebook = {"name":"pippo", "id":"12345"}
-
-#response = requests.get("http://0.0.0.0:5000/api/notebooks", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
-#response = requests.get("http://0.0.0.0:5000/api/notebook/12345", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
-#response = requests.post("http://0.0.0.0:5000/api/notebook/12345", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
-#response = requests.put("http://0.0.0.0:5000/api/notebook/12345", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
-#response = requests.delete("http://0.0.0.0:5000/api/notebook/12345", data=json.dumps(notebook), headers={'Content-Type': 'application/json'})
-
-
-
-@app.route('/newNotebook', methods=['GET','POST'])
-def newNotebook():
-    if current_user.enable:
-        if request.method == 'POST':
-            notebook = {'name' : request.form['name']}
-            res = requests.post(f'{app.config["APISERVER"]}/api/notebook', json=notebook)
-
-            if res.status_code == 201:
-                flash(f'Notebook created!')
-                print(res.text)
-            else:
-                flash(f'Error..')
-        return render_template("newNotebook.html", title="New Notebook")
-    else:
-        return abort(404)
-
-
 
 @app.route('/notebookList', methods=['GET'])
 def notebookList():
@@ -96,10 +69,29 @@ def notebookList():
 
 
 
-@app.route('/deleteNotebook', methods=['GET','POST'])
+@app.route('/newNotebook', methods=['GET','POST'])
+def newNotebook():
+    if current_user.enable:
+        if request.method == 'POST':
+            res = requests.post(f'{app.config["APISERVER"]}/api/notebook', json={'notebook_name' : request.form.get('notebook_name')})
+
+            if res.status_code == 201:
+                flash(f'Notebook created!')
+                print(res.text)
+                return redirect(url_for('notebookList'))
+            else:
+                flash(f'Error..')
+        return render_template("newNotebook.html", title="New Notebook")
+    else:
+        return abort(404)
+
+
+
+@app.route('/deleteNotebook', methods=['POST'])
 def deleteNotebook():
     if current_user.enable:
-        res = requests.delete(f'{app.config["APISERVER"]}/api/notebook/1')
+        id_to_delete = request.form['id_to_delete']
+        res = requests.delete(f'{app.config["APISERVER"]}/api/notebook/{id_to_delete}')
 
         if res.status_code == 200:
             flash(f'Notebook eliminated!')
@@ -107,56 +99,7 @@ def deleteNotebook():
         else:
             flash(f'Error..')
 
-        return render_template("deleteNotebook.html", title="Delete Notebook")
-    else:
-        return abort(404)
-
-
-
-@app.route('/newEndpoint', methods=['GET','POST'])
-def newEndpoint():
-    if current_user.enable:
-        if request.method == 'POST':
-            endpoint = {'name' : request.form['name'], 'training_id': request.form['training_id']}
-            res = requests.post(f'{app.config["APISERVER"]}/api/endpoints/endpoint', data=json.dumps(endpoint), headers={'Content-Type': 'application/json'})
-
-            if res.status_code == 201:
-                flash(f'Endpoint created!')
-                print(res.text)
-            else:
-                flash(f'Error..')
-
-        return render_template("newEndpoint.html", title="New Endpoint")
-    else:
-        return abort(404)
-
-
-
-@app.route('/endpointList')
-def endpointList():
-    if current_user.enable:
-        res = requests.get(f'{app.config["APISERVER"]}/api/endpoints').content
-        all_endpoint = json.loads(res)
-        return render_template("endpointList.html", title="Endpoint List", endpoints=all_endpoint)
-    else:
-        return abort(404)
-
-
-
-@app.route('/newTraining', methods=['GET', 'POST'])
-def newTraining():
-    if current_user.enable:
-        if request.method == 'POST':
-            training = {'name' : request.form['name']}
-            res = requests.post(f'{app.config["APISERVER"]}/api/training', data=json.dumps(training), headers={'Content-Type': 'application/json'})
-
-            if res.status_code == 201:
-                flash(f'Training created!')
-                print(res.text)
-            else:
-                flash(f'Error..')
-
-        return render_template("newTraining.html", title="New Training")
+        return redirect(url_for('notebookList'))
     else:
         return abort(404)
 
@@ -173,12 +116,30 @@ def trainingList():
 
 
 
-@app.route('/deleteTraining', methods=['GET'])
+@app.route('/newTraining', methods=['GET', 'POST'])
+def newTraining():
+    if current_user.enable:
+        if request.method == 'POST':
+            res = requests.post(f'{app.config["APISERVER"]}/api/training', json={'name' : request.form['name']})
+
+            if res.status_code == 201:
+                flash(f'Training created!')
+                print(res.text)
+                return redirect(url_for('trainingList'))
+            else:
+                flash(f'Error..')
+
+        return render_template("newTraining.html", title="New Training")
+    else:
+        return abort(404)
+
+
+
+@app.route('/deleteTraining', methods=['POST'])
 def deleteTraining():
     if current_user.enable:
-        
-        training = {'training_id' : request.form['training_id']}
-        res = requests.delete(f'{app.config["APISERVER"]}/api/training/1',data=json.dumps(training), headers={'Content-Type': 'application/json'})
+        id_to_delete = request.form['id_to_delete']
+        res = requests.delete(f'{app.config["APISERVER"]}/api/training/{id_to_delete}')
 
         if res.status_code == 200:
             flash(f'Training eliminated!')
@@ -186,28 +147,9 @@ def deleteTraining():
         else:
             flash(f'Error..')
 
-        return render_template("deleteTraining.html", title="Delete Training")
+        return redirect(url_for('trainingList'))
     else:
         return abort(404)
-
-
-
-@app.route('/updateTraining', methods=['GET'])
-def updateTraining():
-    if current_user.enable:
-        training = {'name' : request.form['name'], 'training_id' : request.form['training_id']}
-        res = requests.put(f'{app.config["APISERVER"]}/api/training/request.form.get(training_id)', data=json.dumps(training), headers={'Content-Type': 'application/json'})
-
-        if res.status_code == 200:
-            flash(f'Training updated!')
-            print(res.text)
-        else:
-            flash(f'Error..')
-
-        return render_template("updateTraining.html", title="Update Training")
-    else:
-        return abort(404)
-
 
 
 
@@ -215,5 +157,3 @@ def updateTraining():
 def logout():
     logout_user()
     return redirect(url_for('index'))
-
-

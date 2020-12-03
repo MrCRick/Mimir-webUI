@@ -37,19 +37,22 @@
 				<th>Name</th>
 				<th>Update Time</th>
 				<th>Delete</th>
-				<th>Update</th>
 			</tr>
 			{% for notebook in notebooks['value'] %}
 			<tr>
 				<td>{{ notebook['id'] }}</td>
 				<td>{{ notebook['name'] }}</td>
 				<td>{{ notebook['created_date'] }}</td>
-				<td><form action="/deleteNotebook" method="delete"><input type="submit" name="delete" value="Delete"></form></td>
-				<td><form action="/updateNotebook" method="update"><input type="submit" name="update" value="Update"></form></td>
+				<td>
+					<form action="/deleteNotebook" method="post">
+						<input type="submit"  value="Delete">
+						<input type="hidden" name="id_to_delete" value="{{ notebook['id'] }}">
+					</form>
+				</td>
 			</tr>
 			{% endfor %}
 		</table>
-
+		<br>
 		{% with messages = get_flashed_messages() %}
 			{% if messages %}
 			<ul class=flashes>

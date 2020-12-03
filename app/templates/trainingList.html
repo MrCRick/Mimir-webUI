@@ -37,8 +37,8 @@
 				<th>Name</th>
 				<th>Endpoint_count</th>
 				<th>Update Time</th>
+				<th>URL Notebook</th>
 				<th>Delete</th>
-				<th>Update</th>
 			</tr>
 			{% for training in trainings['value'] %}
 			<tr>
@@ -46,10 +46,27 @@
 				<td>{{ training['name'] }}</td>
 				<td>{{ training['endpoints_count'] }}</td>
 				<td>{{ training['created_date'] }}</td>
-				<td><a href="/deleteTraining"><button>Delete</button></a></td>
-				<td><a href="/updateTraining"><button>Update</button></a></td>
+				<td></td>
+
+				<td>
+					<form action="/deleteTraining" method="post">
+						<input type="submit"  value="Delete">
+						<input type="hidden" name="id_to_delete" value="{{ training['id'] }}">
+					</form>
+				</td>
 			</tr>
 			{% endfor %}
 		</table>
+		<br>
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			<ul class=flashes>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+		{% endwith %}
+
 	</div>
 {% endblock %}
