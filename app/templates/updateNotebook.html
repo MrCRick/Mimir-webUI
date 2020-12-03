@@ -4,7 +4,7 @@
 {% block content%}
 
 <div class="row">
-	<h2 style="text-align: center;">DELETE TRAINING</h2>
+	<h2 style="text-align: center;">UPDATE NOTEBOOK</h2>
 </div>
 
 {% endblock %}
@@ -12,11 +12,14 @@
 {% block container %}
 	<br>
 	<div class="col-md-6 col-md-offset-3">
-		<form action="/deleteTraining" method="delete">
+		<form action="/updateNotebook" method="put">
 
-			<p>Training ID: <input type="" name="training_id"></p>
+			<p>Notebook name: <input type="text" name="name"></p>
 
-			<p><input type="submit" value="Delete"></p>
+			<p>Notebook ID: <input type="integer" name="notebook_id"></p>
+
+
+			<p><input type="submit" value="Update"></p>
 
 		</form>
 

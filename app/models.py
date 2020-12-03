@@ -42,5 +42,3 @@ class Controller(ModelView):
 
     def not_auth(self):
         return "you are not abilitated to use this admin panel control"
-
-

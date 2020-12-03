@@ -7,23 +7,19 @@
 	<h2 style="text-align: center;">CREATE ENDPOINT</h2>
 </div>
 
-  
 {% endblock %}
 
 {% block container %}
 	<br>
 	<div class="col-md-6 col-md-offset-3">
 		<form action="/newEndpoint" method="post">
-			{{ form.hidden_tag() }}
-			<p>
-  				{{ form.name.label }}<br>
-            	{{ form.name(size=32) }}<br>
-			</p>
-			<p>
-  				{{ form.training_id.label }}<br>
-            	{{ form.training_id(size=32) }}<br>
-			</p>
-			<p>{{ form.submit() }}</p>
+
+			<p>Endpoint name: <input name="name" minlength="4" maxlength="10" required=""></p>
+
+			<p>Training ID: <input type="integer" name="training_id" required=""></p>
+
+			<p><input type="submit" value="Create"></p>
+
 		</form>
 
 		{% with messages = get_flashed_messages() %}
