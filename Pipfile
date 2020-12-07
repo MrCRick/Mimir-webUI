@@ -17,6 +17,9 @@ python-dotenv = "*"
 flask-admin = "*"
 flask-httpauth = "*"
 requests = "*"
+"flask.cli" = "*"
+click = "*"
+flask-cli = "*"
 
 [requires]
 python_version = "3.8"

@@ -30,7 +30,6 @@ class Users(UserMixin, db.Model):
 
 
 
-
 class Controller(ModelView):
     
     def is_accessible(self):
@@ -38,7 +37,6 @@ class Controller(ModelView):
             return current_user.is_authenticated
         else:
             return abort(403)
-
 
     def not_auth(self):
         return "you are not abilitated to use this admin panel control"

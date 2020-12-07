@@ -8,7 +8,6 @@ import requests
 import json
 import os
 
-
 APISERVER = os.environ.get("APISERVER")
 
 
@@ -158,7 +157,8 @@ def endpoints():
 @app.route('/newEndpoint', methods=['POST'])
 def newEndpoint():
     if current_user.enable:
-        res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json={'name' : request.form['name'], 'training_id' : request.form['training_id']})
+        endpoint = {'name': request.form['name'], 'training_id' : request.form['training_id']}
+        res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json=endpoint)
 
         if res.status_code == 201:
             flash(f'Endpoint created!')
