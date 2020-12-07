@@ -7,7 +7,7 @@
     {%block container%}
     <br>
     <div class="col-md-6 col-md-offset-4">
-    <form action="" method="post" novalidate>
+    <form action="" method="post"novalidate>
         {{ form.hidden_tag() }}
         <p>
             {{ form.email.label }}<br>
@@ -23,6 +23,17 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes >
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+
+        {% endwith %}
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit() }}</p>
         <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>

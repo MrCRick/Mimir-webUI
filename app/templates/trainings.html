@@ -3,7 +3,7 @@
 
 {% block content%}
 
-		<h2>TRAINING LIST</h2>
+		<h2>TRAINING</h2>
 
 {% endblock %}
 
@@ -31,23 +31,28 @@
 
 	<br>
 	<div>
+		<form action="/newTraining" method="post">
+			<p>Create new Training: <input name="name" placeholder="training name" minlength="4" maxlength="10" required="">
+				<input type="submit" value="Create">
+			</p>
+		</form>
+		<br>
 		<table>
 			<tr>
 				<th>ID</th>
 				<th>Name</th>
 				<th>Endpoint_count</th>
 				<th>Update Time</th>
-				<th>URL Notebook</th>
+				<th>Status</th>
 				<th>Delete</th>
 			</tr>
-			{% for training in trainings['value'] %}
+			{% for training in trainings['trainings'] %}
 			<tr>
 				<td>{{ training['id'] }}</td>
 				<td>{{ training['name'] }}</td>
 				<td>{{ training['endpoints_count'] }}</td>
 				<td>{{ training['created_date'] }}</td>
-				<td></td>
-
+				<td>{{ training['status'] }}</td>
 				<td>
 					<form action="/deleteTraining" method="post">
 						<input type="submit"  value="Delete">

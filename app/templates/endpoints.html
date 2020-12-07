@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+
+{% block content%}
+
+		<h2>ENDPOINT</h2>
+
+{% endblock %}
+
+
+{% block container %}
+<head>
+	<style>
+		table {
+			font-family: arial, sans-serif;
+  			border-collapse: collapse;
+  			width: 100%;
+		}
+
+		td, th {
+  			border: 1px solid #dddddd;
+  			text-align: left;
+  			padding: 8px;
+		}
+
+		tr:nth-child(even) {
+			background-color: #dddddd;
+		}
+	</style>
+</head>
+
+	<br>
+	<div>
+		<form action="/newEndpoint" method="post">
+			<p>Create new Endpoint: <input name="name" placeholder="endpoint name" minlength="4" maxlength="10" required=""></p>
+			<p>Training ID: <input type="id" min="0" name="training_id" placeholder="training id" required=""></p>
+			<p><input type="submit" value="Create"></p>
+		</form>
+		<br>
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Update Time</th>
+				<th>Status</th>
+
+				<th>Training ID</th>
+				<th>Training Name</th>
+				<th>Endpoint Count</th>
+				<th>Training Update Time</th>
+				<th>Training Status</th>
+				<th>Delete</th>
+			</tr>
+			{% for endpoint in endpoints['endpoints'] %}
+			<tr>
+				<td>{{ endpoint['id'] }}</td>
+				<td>{{ endpoint['name'] }}</td>
+				<td>{{ endpoint['createdDate'] }}</td>
+				<td>{{ endpoint['status'] }}</td>
+
+				<td>{{ endpoint.training['id'] }}</td>
+				<td>{{ endpoint.training['name'] }}</td>
+				<td>{{ endpoint.training['endpoints_count'] }}</td>
+				<td>{{ endpoint.training['created_date'] }}</td>
+				<td>{{ endpoint.training['status'] }}</td>
+				<td>
+					<form action="/deleteEndpoint" method="post">
+						<input type="submit"  value="Delete">
+						<input type="hidden" name="id_to_delete" value="{{ endpoint['id'] }}">
+					</form>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+		<br>
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			<ul class=flashes>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+		{% endwith %}
+
+	</div>
+{% endblock %}

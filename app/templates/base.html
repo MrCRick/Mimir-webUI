@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 {% block title %}
-<title>{{ title }} - MIMIR</title>
+<title>MIMIR - {{ title }}</title>
 {% endblock %}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,18 +15,18 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
 </style>
 <head>
 
-
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-  <!--<script src="static/js/endpoint.js"></script> -->
-  
+
+  <link rel="shortcut icon" href="{{ url_for('static', filename='Mimir_Logo.ico') }}">
+
+
 </head>
 <body class="w3-content" style="max-width:1200px">
 
-<!--<div id="apiserver" style="display: none;">{{ apiserver }}</div> -->
 
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
@@ -34,20 +34,25 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   <div class="w3-container w3-display-container w3-padding-16">
     <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
     <h3 class="w3-wide"><b>MIMIR</b></h3>
+
   </div>
 
 
-  <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold">
-    <a href="{{ url_for('index') }}" class="w3-bar-item w3-button"><h4>Home</h4></a>
+  <div class="w3-padding-64 w3-large w3-text-grey">
+    <br>
+    <a href="{{ url_for('index') }}" class="w3-bar-item w3-button">Home</a>
 
     {% if current_user.is_anonymous %}
 
     <a href="{{ url_for('register') }}" class="w3-bar-item w3-button">Register</a>
-    <a href="{{ url_for('login') }}" class="w3-bar-item w3-button">Login</a></div>
+
+    <a href="{{ url_for('login') }}" class="w3-bar-item w3-button">Login</a>
 
     {% else %}
 
     <a href="{{ url_for('user', username=current_user.username) }}" class="w3-bar-item w3-button">Profile</a>
+
+    {% endif %}
 
     {% if current_user.is_admin %}
 
@@ -55,21 +60,29 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
 
     {% endif %}
 
-<!--Accordion wrapper-->
+    {% if current_user.enable %}
+
+    <a href="{{ url_for('notebooks') }}" class="w3-bar-item w3-button">Notebook</a>
+
+    <a href="{{ url_for('trainings') }}" class="w3-bar-item w3-button">Training</a>
+
+    <a href="{{ url_for('endpoints') }}" class="w3-bar-item w3-button">Endpoint</a>
+
+    {% endif %}
+
+<!--
 <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
 
-  <!-- Accordion card -->
+
   <div class="card">
 
-    <!-- Card header -->
-    {% if current_user.enable %}
     <div class="card-header" role="tab" id="headingOne1">
       <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="false"
         aria-controls="collapseOne1" class="w3-bar-item w3-button"><h4>Notebook<i class="fa fa-caret-down"></i></h4>
       </a>
     </div>
+    
 
-    <!-- Card body -->
     <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1" data-parent="#accordionEx">
       <div class="card-body"><a href="/newNotebook" class="w3-bar-item w3-button">New notebook</a>
       </div>
@@ -78,18 +91,16 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
     </div>
 
   </div>
-  <!-- Accordion card -->
 
-  <!-- Accordion card -->
+
   <div class="card">
 
-    <!-- Card header -->
     <div class="card-header" role="tab" id="headingTwo2">
       <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2"
         aria-expanded="false" aria-controls="collapseTwo2" class="w3-bar-item w3-button"><h4>Training<i class="fa fa-caret-down"></i></h4></a>
     </div>
 
-    <!-- Card body -->
+
     <div id="collapseTwo2" class="collapse" role="tabpanel" aria-labelledby="headingTwo2" data-parent="#accordionEx">
       <div class="card-body"><a href="/newTraining" class="w3-bar-item w3-button">New training</a>
       </div>
@@ -97,23 +108,14 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
       </div>
     </div>
 
-  </div>
-  <!-- Accordion card -->
+  </div> --> 
 
-  <!-- Accordion card -->
-  <div class="card">
-    
-    {% endif %}
-
-  </div>
-  <!-- Accordion card -->
-
-</div>
-<!-- Accordion wrapper -->
-
+  <!-- Accordion wrapper -->
+  <br>
   <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button"><h4>Logout</h4></a>
+  </div>
 
-    {% endif %}
+
 </nav>
 
 <!-- Top menu on small screens -->
@@ -121,7 +123,7 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   <div class="w3-bar-item w3-padding-24 w3-wide">MIMIR</div>
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
 </header>
-
+<br>
 <!-- Overlay effect when opening sidebar on small screens -->
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
@@ -135,7 +137,6 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   <header class="w3-container w3-xlarge">
     <p class="w3-left"></p>
     <p class="w3-right">
-      <a href="/logout" class="w3-bar-item w3-button w3-padding"><i class="fa fa-power-off"></i></a>
     </p>
   </header>
 
@@ -178,6 +179,3 @@ function w3_close() {
 </script>
 </body>
 </html>
-
-
-

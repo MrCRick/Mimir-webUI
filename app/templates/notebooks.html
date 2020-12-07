@@ -3,7 +3,7 @@
 
 {% block content%}
 
-	<h2>NOTEBOOK LIST</h2>
+	<h2>NOTEBOOK</h2>
 
 {% endblock %}
 
@@ -31,18 +31,34 @@
 
 	<br>
 	<div>
+
+		<form action="/newNotebook" method="post">
+			<p>Create new Notebook: <input type="text" name="name" placeholder="notebook name" minlength="4" maxlength="10" required="">
+				<input type="submit" value="Create">
+			</p>
+		</form>
+
+		<br>
 		<table>
 			<tr>
 				<th>ID</th>
 				<th>Name</th>
+				<th>Deployment Name</th>
+				<th>Docker Image</th>
+				<th>URL Notebook</th>
 				<th>Update Time</th>
+				<th>Status</th>
 				<th>Delete</th>
 			</tr>
-			{% for notebook in notebooks['value'] %}
+			{% for notebook in notebooks['notebooks'] %}
 			<tr>
 				<td>{{ notebook['id'] }}</td>
 				<td>{{ notebook['name'] }}</td>
+				<td>{{ notebook['deployment_name'] }}</td>
+				<td>{{ notebook['docker_image_name'] }}</td>
+				<td></td>
 				<td>{{ notebook['created_date'] }}</td>
+				<td>{{ notebook['status'] }}</td>
 				<td>
 					<form action="/deleteNotebook" method="post">
 						<input type="submit"  value="Delete">

@@ -6,6 +6,10 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 import requests
 import json
+import os
+
+
+APISERVER = os.environ.get("APISERVER")
 
 
 @app.route('/')
@@ -23,7 +27,6 @@ def login():
     if form.validate_on_submit():
         user = Users.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid email or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
@@ -57,31 +60,27 @@ def user(username):
 
 
 
-
-@app.route('/notebookList', methods=['GET'])
-def notebookList():
+@app.route('/notebooks', methods=['GET'])
+def notebooks():
     if current_user.enable:
-        res = requests.get(f'{app.config["APISERVER"]}/api/notebook').content
+        res = requests.get(f'{APISERVER}/api/notebook').content
         all_notebook = json.loads(res)
-        return render_template("notebookList.html", title="Notebook List", notebooks=all_notebook)
+        return render_template("notebooks.html", title="Notebooks", notebooks=all_notebook)
     else:
         return abort(404)
 
 
 
-@app.route('/newNotebook', methods=['GET','POST'])
+@app.route('/newNotebook', methods=['POST'])
 def newNotebook():
     if current_user.enable:
-        if request.method == 'POST':
-            res = requests.post(f'{app.config["APISERVER"]}/api/notebook', json={'notebook_name' : request.form.get('notebook_name')})
+        res = requests.post(f'{APISERVER}/api/notebook', json={'name' : request.form.get('name')})
 
-            if res.status_code == 201:
-                flash(f'Notebook created!')
-                print(res.text)
-                return redirect(url_for('notebookList'))
-            else:
-                flash(f'Error..')
-        return render_template("newNotebook.html", title="New Notebook")
+        if res.status_code == 201:
+            flash(f'Notebook created!')
+        else:
+            flash(f'Something went wrong..')
+        return redirect(url_for('notebooks'))
     else:
         return abort(404)
 
@@ -91,45 +90,39 @@ def newNotebook():
 def deleteNotebook():
     if current_user.enable:
         id_to_delete = request.form['id_to_delete']
-        res = requests.delete(f'{app.config["APISERVER"]}/api/notebook/{id_to_delete}')
+        res = requests.delete(f'{APISERVER}/api/notebook/{id_to_delete}')
 
         if res.status_code == 200:
             flash(f'Notebook eliminated!')
-            print(res.text)
         else:
-            flash(f'Error..')
-
-        return redirect(url_for('notebookList'))
+            flash(f'Something went wrong..')
+        return redirect(url_for('notebooks'))
     else:
         return abort(404)
 
 
 
-@app.route('/trainingList')
-def trainingList():
+@app.route('/trainings')
+def trainings():
     if current_user.enable:
-        res = requests.get(f'{app.config["APISERVER"]}/api/training').content
+        res = requests.get(f'{APISERVER}/api/training').content
         all_training= json.loads(res)
-        return render_template("trainingList.html", title="Training List", trainings=all_training)
+        return render_template("trainings.html", title="Trainings", trainings=all_training)
     else:
         return abort(404)
 
 
 
-@app.route('/newTraining', methods=['GET', 'POST'])
+@app.route('/newTraining', methods=['POST'])
 def newTraining():
     if current_user.enable:
-        if request.method == 'POST':
-            res = requests.post(f'{app.config["APISERVER"]}/api/training', json={'name' : request.form['name']})
+        res = requests.post(f'{APISERVER}/api/training', json={'name' : request.form['name']})
 
-            if res.status_code == 201:
-                flash(f'Training created!')
-                print(res.text)
-                return redirect(url_for('trainingList'))
-            else:
-                flash(f'Error..')
-
-        return render_template("newTraining.html", title="New Training")
+        if res.status_code == 201:
+            flash(f'Training created!')
+        else:
+            flash(f'Something went wrong..')
+        return redirect(url_for('trainings'))
     else:
         return abort(404)
 
@@ -139,15 +132,55 @@ def newTraining():
 def deleteTraining():
     if current_user.enable:
         id_to_delete = request.form['id_to_delete']
-        res = requests.delete(f'{app.config["APISERVER"]}/api/training/{id_to_delete}')
+        res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
 
         if res.status_code == 200:
             flash(f'Training eliminated!')
-            print(res.text)
         else:
-            flash(f'Error..')
+            flash(f'Something went wrong..')
+        return redirect(url_for('trainings'))
+    else:
+        return abort(404)
 
-        return redirect(url_for('trainingList'))
+
+
+@app.route('/endpoints', methods=['GET'])
+def endpoints():
+    if current_user.enable:
+        res = requests.get(f'{APISERVER}/api/endpoints').content
+        all_endpoint = json.loads(res)
+        return render_template("endpoints.html", title="Endpoint", endpoints=all_endpoint)
+    else:
+        return abort(404)
+
+
+
+@app.route('/newEndpoint', methods=['POST'])
+def newEndpoint():
+    if current_user.enable:
+        res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json={'name' : request.form['name'], 'training_id' : request.form['training_id']})
+
+        if res.status_code == 201:
+            flash(f'Endpoint created!')
+        else:
+            flash(f'Something went wrong..')
+        return redirect(url_for('endpoints'))
+    else:
+        return abort(404)
+
+
+
+@app.route('/deleteEndpoint', methods=['POST'])
+def deleteEndpoint():
+    if current_user.enable:
+        id_to_delete = request.form['id_to_delete']
+        res = requests.delete(f'{APISERVER}/api/endpoint/{id_to_delete}')
+
+        if res.status_code == 200:
+            flash(f'Endpoint eliminated!')
+        else:
+            flash(f'Something went wrong..')
+        return redirect(url_for('endpoints'))
     else:
         return abort(404)
 
