@@ -9,29 +9,39 @@ Prerequisites
 
 You need to install:
 
-Miniconda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
+1 Miniconda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 
-
-In your command line, type:
-
-pip: 
+2 Pip: 
 
     $ sudo apt install python-pip
     
-pipenv:
+3 Pipenv:
 
     $ pip install pipenv
    
 
-In your directory create a virtual env with pipenv
+In your directory create a virtual env with command:
 
     $ pipenv shell
     
 
-Now in your env install:
+Now in your virtual env install all dependencies:
 
-    $ pipenv install .
+    $ pipenv install --dev
     
+
+Set environment variables to connect WebUI to Api Server:
+
+    $ nano ~/.bashrc
+    
+At the end set variables: 
+
+	export APISERVER="ip address of the api server you choice"
+
+Save the changes:
+	
+	$ source ~/.bashrc    
+
 
 Running It
 ----------
