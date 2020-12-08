@@ -46,4 +46,6 @@ Save the changes:
 Running It
 ----------
 
+In your virtual env:
+
     $ python -m flask run
