@@ -70,53 +70,13 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
 
     {% endif %}
 
-<!--
-<div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
-
-
-  <div class="card">
-
-    <div class="card-header" role="tab" id="headingOne1">
-      <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="false"
-        aria-controls="collapseOne1" class="w3-bar-item w3-button"><h4>Notebook<i class="fa fa-caret-down"></i></h4>
-      </a>
-    </div>
-    
-
-    <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1" data-parent="#accordionEx">
-      <div class="card-body"><a href="/newNotebook" class="w3-bar-item w3-button">New notebook</a>
-      </div>
-      <div class="card-body"><a href="/notebookList" class="w3-bar-item w3-button">List notebook</a>
-      </div>
-    </div>
-
+    <br>
+    <br>
+    <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button"><h4>Logout</h4></a>
   </div>
-
-
-  <div class="card">
-
-    <div class="card-header" role="tab" id="headingTwo2">
-      <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2"
-        aria-expanded="false" aria-controls="collapseTwo2" class="w3-bar-item w3-button"><h4>Training<i class="fa fa-caret-down"></i></h4></a>
-    </div>
-
-
-    <div id="collapseTwo2" class="collapse" role="tabpanel" aria-labelledby="headingTwo2" data-parent="#accordionEx">
-      <div class="card-body"><a href="/newTraining" class="w3-bar-item w3-button">New training</a>
-      </div>
-      <div class="card-body"><a href="/trainingList" class="w3-bar-item w3-button">List training</a>
-      </div>
-    </div>
-
-  </div> --> 
-
-  <!-- Accordion wrapper -->
-  <br>
-  <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button"><h4>Logout</h4></a>
-  </div>
-
 
 </nav>
+
 
 <!-- Top menu on small screens -->
 <header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
@@ -124,6 +84,7 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
 </header>
 <br>
+
 <!-- Overlay effect when opening sidebar on small screens -->
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
@@ -133,36 +94,18 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   <!-- Push down content on small screens -->
   <div class="w3-hide-large" style="margin-top:83px"></div>
   
-  <!-- Top header -->
-  <header class="w3-container w3-xlarge">
-    <p class="w3-left"></p>
-    <p class="w3-right">
-    </p>
-  </header>
 
   <!-- Subscribe section -->
   <div class="w3-container w3-black w3-padding-32">
     {% block content %} {% endblock %}
   </div>
+
     {% block container %} {% endblock %}
   <!-- End page content -->
 </div>
 
 
 <script>
-// Accordion 
-function myAccFunc() {
-  var x = document.getElementById("demoAcc");
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-  } else {
-    x.className = x.className.replace(" w3-show", "");
-  }
-}
-
-// Click on the "Jeans" link on page load to open the accordion for demo purposes
-document.getElementById("myBtn").click();
-
 
 // Open and close sidebar
 function w3_open() {
@@ -174,7 +117,6 @@ function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
   document.getElementById("myOverlay").style.display = "none";
 }
-
 
 </script>
 </body>

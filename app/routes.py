@@ -67,7 +67,7 @@ def notebooks():
         all_notebook = json.loads(res)
         return render_template("notebooks.html", title="Notebooks", notebooks=all_notebook)
     else:
-        return abort(404)
+        return redirect(url_for('403'))
 
 
 
@@ -79,10 +79,10 @@ def newNotebook():
         if res.status_code == 201:
             flash(f'Notebook created!')
         else:
-            flash(f'Something went wrong..')
+            flash(res.status_code)
         return redirect(url_for('notebooks'))
     else:
-        return abort(404)
+        return redirect(url_for('403'))
 
 
 
@@ -95,10 +95,10 @@ def deleteNotebook():
         if res.status_code == 200:
             flash(f'Notebook eliminated!')
         else:
-            flash(f'Something went wrong..')
+            flash(res.status_code)
         return redirect(url_for('notebooks'))
     else:
-        return abort(404)
+        return redirect(url_for('403'))
 
 
 
@@ -109,7 +109,7 @@ def trainings():
         all_training= json.loads(res)
         return render_template("trainings.html", title="Trainings", trainings=all_training)
     else:
-        return abort(404)
+        return redirect(url_for('403'))
 
 
 
@@ -121,10 +121,10 @@ def newTraining():
         if res.status_code == 201:
             flash(f'Training created!')
         else:
-            flash(f'Something went wrong..')
+            flash(res.status_code)
         return redirect(url_for('trainings'))
     else:
-        return abort(404)
+        return redirect(url_for('403'))
 
 
 
@@ -137,10 +137,10 @@ def deleteTraining():
         if res.status_code == 200:
             flash(f'Training eliminated!')
         else:
-            flash(f'Something went wrong..')
+            flash(res.status_code)
         return redirect(url_for('trainings'))
     else:
-        return abort(404)
+        return redirect(url_for('403'))
 
 
 
@@ -149,9 +149,10 @@ def endpoints():
     if current_user.enable:
         res = requests.get(f'{APISERVER}/api/endpoints').content
         all_endpoint = json.loads(res)
+        flash(f'Sorry, endpoints are not enabled.')
         return render_template("endpoints.html", title="Endpoint", endpoints=all_endpoint)
     else:
-        return abort(404)
+        return redirect(url_for('403'))
 
 
 
@@ -164,10 +165,10 @@ def newEndpoint():
         if res.status_code == 201:
             flash(f'Endpoint created!')
         else:
-            flash(f'Something went wrong..')
+            flash(res.status_code)
         return redirect(url_for('endpoints'))
     else:
-        return abort(404)
+        return redirect(url_for('403'))
 
 
 
@@ -180,10 +181,10 @@ def deleteEndpoint():
         if res.status_code == 200:
             flash(f'Endpoint eliminated!')
         else:
-            flash(f'Something went wrong..')
+            flash(res.status_code)
         return redirect(url_for('endpoints'))
     else:
-        return abort(404)
+        return redirect(url_for('403'))
 
 
 
