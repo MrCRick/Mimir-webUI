@@ -1,4 +1,3 @@
-from flask import flash
 from app import db
 from app.models import Users
 import sqlite3 as sql
@@ -19,12 +18,12 @@ def cli():
 
 
 
-#Show users
-@cli.command('list-users')
+@cli.command('users')
 def list_users():
+	"""Show all users"""
 	con = sql.connect("app.db")
 	cur = con.cursor()
-	cur.execute('SELECT * FROM Users')
+	cur.execute('SELECT username, email, enable, is_admin FROM Users')
 	users = cur.fetchall()
 
 	for u in users:
@@ -32,34 +31,32 @@ def list_users():
 
 
 
-# add command to promote first user on an empty DB
 @cli.command('make-admin')
 @click.argument('email')
 def promote_user(email):
+	"""Make a new admin"""
 	user = Users.query.filter_by(email=email).first_or_404()
-	if email is not email:
-		click.echo("The user "+email+" found.")
-	else:
-		con = sql.connect("app.db")
-		con.execute('UPDATE Users SET enable = True WHERE email = ?',(email,))
-		con.execute('UPDATE Users SET is_admin = True WHERE email = ?',(email,))
-		con.commit()
-		click.echo("The user "+email+" enabled and is admin now.")
+
+	con = sql.connect("app.db")
+	con.execute('UPDATE Users SET enable = True WHERE email = ?', (email,))
+	con.execute('UPDATE Users SET is_admin = True WHERE email = ?', (email,))
+	con.commit()
+	click.echo('\nUser (' + email +') enabled and admin now.\n')
 
 
 
-#Show list notebook
-@cli.command('list-notebook')
+@cli.command('notebooks')
 def notebooks():
+	"""Show all notebooks"""
 	res = requests.get(f'{APISERVER}/api/notebook').content
 	click.echo(res)
 
 
 
-#Create new notebook
 @cli.command('create-notebook')
 @click.argument('name')
 def newNotebook(name):
+	"""Create notebook"""
 	res = requests.post(f'{APISERVER}/api/notebook', json={'name':name})
 
 	if res.status_code == 201:
@@ -70,10 +67,10 @@ def newNotebook(name):
 
 
 
-#Delete notebook
 @cli.command('delete-notebook')
 @click.argument('id_to_delete')
 def deleteNotebook(id_to_delete):
+	"""Delete notebook"""
 	res = requests.delete(f'{APISERVER}/api/notebook/{id_to_delete}')
 
 	if res.status_code == 200:
@@ -83,18 +80,18 @@ def deleteNotebook(id_to_delete):
 
 
 
-#Show list training
-@cli.command('list-training')
+@cli.command('trainings')
 def trainings():
+	"""Show all trainings"""
 	res = requests.get(f'{APISERVER}/api/training').content
 	click.echo(res)
 
 
 
-#Create a new Training
 @cli.command('create-training')
 @click.argument('name')
 def newTraining(name):
+	"""Create training"""
 	res = requests.post(f'{APISERVER}/api/training', json={'name' : name})
 
 	if res.status_code == 201:
@@ -105,32 +102,32 @@ def newTraining(name):
 
 
 
-#Delete Training
 @cli.command('delete-training')
 @click.argument('id_to_delete')
 def deleteTraining(id_to_delete):
-    res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
+	"""Delete training"""
+	res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
 
-    if res.status_code == 200:
-        click.echo('\nTraining eliminated!\n')
-    else:
-        click.echo(res.status_code)
+	if res.status_code == 200:
+		click.echo('\nTraining eliminated!\n')
+	else:
+		click.echo(res.status_code)
 
 
 
-#Show list endpoints
-@cli.command('list-endpoint')
+@cli.command('endpoints')
 def endpoints():
+	"""Show all endpoints"""
 	res = requests.get(f'{APISERVER}/api/endpoints').content
 	click.echo(res)
 
 
 
-#Create new endpoint
 @cli.command('create-endpoint')
 @click.argument('name')
 @click.argument('training_id')
 def newEndpoint(name,training_id):
+	"""Create endpoint"""
 	res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json={'name': name, 'training_id' : training_id })
 
 	if res.status_code == 201:
@@ -141,10 +138,10 @@ def newEndpoint(name,training_id):
 
 
 
-#Delete endpoint
 @cli.command('delete-endpoint')
 @click.argument('id_to_delete')
 def deleteTraining(id_to_delete):
+	"""Delete endpoint"""
 	res = requests.delete(f'{APISERVER}/api/endpoint/{id_to_delete}')
 
 	if res.status_code == 200:
