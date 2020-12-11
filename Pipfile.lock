@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9230c4b68dc0c320c04264199141f49ec804cdcc28e2a0233f74df31bfc4dc9c"
+            "sha256": "2c9a7ba230adc4609d19fd84b42c66d6a72bae0a06cdb5efc3cd2e84154d33c3"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.8"
+            "python_version": "3.*"
         },
         "sources": [
             {
@@ -50,7 +50,7 @@
                 "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a",
                 "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"
             ],
-            "index": "pypi",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
             "version": "==7.1.2"
         },
         "dnspython": {
@@ -83,14 +83,6 @@
             ],
             "index": "pypi",
             "version": "==1.5.7"
-        },
-        "flask-cli": {
-            "hashes": [
-                "sha256:625b534f1bd4d05cbd2084b6b820e2d8cbfea8bc08dd3ee786f365bc0591f1d8",
-                "sha256:6604ab407c0a2f6cdb51e1f64bdb01b8b135d547a0a99189b9158353ded6eeb9"
-            ],
-            "index": "pypi",
-            "version": "==0.4.0"
         },
         "flask-httpauth": {
             "hashes": [
@@ -139,14 +131,6 @@
             ],
             "index": "pypi",
             "version": "==0.14.3"
-        },
-        "flask.cli": {
-            "hashes": [
-                "sha256:625b534f1bd4d05cbd2084b6b820e2d8cbfea8bc08dd3ee786f365bc0591f1d8",
-                "sha256:6604ab407c0a2f6cdb51e1f64bdb01b8b135d547a0a99189b9158353ded6eeb9"
-            ],
-            "index": "pypi",
-            "version": "==0.4.0"
         },
         "idna": {
             "hashes": [

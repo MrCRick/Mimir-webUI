@@ -33,7 +33,7 @@
 	<div>
 
 		<form action="/newNotebook" method="post">
-			<p>Create new Notebook: <input type="text" name="name" placeholder="notebook name" minlength="4" maxlength="10" required="">
+			<p>Create new Notebook: <input type="text" name="name" placeholder="notebook name" minlength="4" maxlength="20" required="">
 				<input type="submit" value="Create">
 			</p>
 		</form>
@@ -56,7 +56,7 @@
 				<td>{{ notebook['name'] }}</td>
 				<td>{{ notebook['deployment_name'] }}</td>
 				<td>{{ notebook['docker_image_name'] }}</td>
-				<td><a href="http://pippo.notebooks.kubernetes.local/">{{ notebook['notebook_url'] }}</td>
+				<td><a href="http://pippo-1.notebooks.kubernetes.local/">{{ notebook['notebook_url'] }}</td>
 				<td>{{ notebook['created_date'] }}</td>
 				<td>{{ notebook['status'] }}</td>
 				<td>

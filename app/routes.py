@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, make_response, abort
+from flask import render_template, flash, redirect, url_for, request, jsonify, make_response
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import Users
@@ -10,6 +10,7 @@ import os
 
 
 APISERVER = os.environ.get("APISERVER")
+
 
 
 @app.route('/')
@@ -159,8 +160,7 @@ def endpoints():
 @app.route('/newEndpoint', methods=['POST'])
 def newEndpoint():
     if current_user.enable:
-        endpoint = {'name': request.form['name'], 'training_id' : request.form['training_id']}
-        res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json=endpoint)
+        res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json={'name': request.form['name'], 'training_id' : request.form['training_id']})
 
         if res.status_code == 201:
             flash(f'Endpoint created!')
