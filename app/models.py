@@ -14,11 +14,14 @@ class Users(UserMixin, db.Model):
     enable = db.Column(db.Boolean, default=False)
     is_admin = db.Column(db.Boolean, default=False)
 
+
     def __repr__(self):
         return '<Users {}>'.format(self.username)
 
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
+
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -40,3 +43,7 @@ class Controller(ModelView):
 
     def not_auth(self):
         return "you are not abilitated to use this admin panel control"
+
+
+
+    
