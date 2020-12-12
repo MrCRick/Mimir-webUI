@@ -1,5 +1,6 @@
 from app import db
 from app.models import Users
+from flask_login import current_user, login_user, logout_user, login_required
 import sqlite3 as sql
 import requests
 import json
@@ -35,7 +36,7 @@ def list_users():
 @click.argument('email')
 def promote_user(email):
 	"""Make a new admin"""
-	user = Users.query.filter_by(email=email).first_or_404()
+	user = Users.query.filter_by(email=email).first_or_404(description='  User ({}) not found.\n'.format(email))
 
 	con = sql.connect("app.db")
 	con.execute('UPDATE Users SET enable = True WHERE email = ?', (email,))
