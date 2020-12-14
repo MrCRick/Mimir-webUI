@@ -7,9 +7,19 @@ from werkzeug.urls import url_parse
 import requests
 import json
 import os
+import sqlite3
+
 
 
 APISERVER = os.environ.get("APISERVER")
+
+
+
+def createDB():
+    conn = sqlite3.connect('user_object.db')
+    if conn is None:
+        conn.execute('CREATE TABLE user_object (id_user INT, id_notebook INT, id_training INT, id_endpoint INT)')
+        conn.close()
 
 
 
@@ -17,6 +27,21 @@ APISERVER = os.environ.get("APISERVER")
 @app.route('/index')
 def index():
     return render_template('index.html', title="Home Page")
+
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = Users(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('login'))
+    return render_template('register.html', title="Register", form=form)
 
 
 
@@ -38,21 +63,6 @@ def login():
 
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = Users(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('login'))
-    return render_template('register.html', title="Register", form=form)
-
-
-
 @app.route('/profile/<username>')
 @login_required
 def user(username):
@@ -62,6 +72,7 @@ def user(username):
 
 
 @app.route('/notebooks', methods=['GET'])
+@login_required
 def notebooks():
     if current_user.enable:
         res = requests.get(f'{APISERVER}/api/notebook').content
@@ -73,6 +84,7 @@ def notebooks():
 
 
 @app.route('/newNotebook', methods=['POST'])
+@login_required
 def newNotebook():
     if current_user.enable:
         res = requests.post(f'{APISERVER}/api/notebook', json={'name' : request.form.get('name')})
@@ -88,6 +100,7 @@ def newNotebook():
 
 
 @app.route('/deleteNotebook', methods=['POST'])
+@login_required
 def deleteNotebook():
     if current_user.enable:
         id_to_delete = request.form['id_to_delete']
@@ -104,6 +117,7 @@ def deleteNotebook():
 
 
 @app.route('/trainings')
+@login_required
 def trainings():
     if current_user.enable:
         res = requests.get(f'{APISERVER}/api/training').content
@@ -115,6 +129,7 @@ def trainings():
 
 
 @app.route('/newTraining', methods=['POST'])
+@login_required
 def newTraining():
     if current_user.enable:
         res = requests.post(f'{APISERVER}/api/training', json={'name' : request.form['name']})
@@ -130,6 +145,7 @@ def newTraining():
 
 
 @app.route('/deleteTraining', methods=['POST'])
+@login_required
 def deleteTraining():
     if current_user.enable:
         id_to_delete = request.form['id_to_delete']
@@ -146,6 +162,7 @@ def deleteTraining():
 
 
 @app.route('/endpoints', methods=['GET'])
+@login_required
 def endpoints():
     if current_user.enable:
         res = requests.get(f'{APISERVER}/api/endpoints').content
@@ -158,6 +175,7 @@ def endpoints():
 
 
 @app.route('/newEndpoint', methods=['POST'])
+@login_required
 def newEndpoint():
     if current_user.enable:
         res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json={'name': request.form['name'], 'training_id' : request.form['training_id']})
@@ -173,6 +191,7 @@ def newEndpoint():
 
 
 @app.route('/deleteEndpoint', methods=['POST'])
+@login_required
 def deleteEndpoint():
     if current_user.enable:
         id_to_delete = request.form['id_to_delete']

@@ -81,6 +81,20 @@ In your virtual env:
 
 
 
+Cli
+----
+If you want to create, destroy or view the list of notebook and training from your cli, you need to use this command in the virtual environment:
+
+	$ pip install --editable .
+
+Then you with the command:
+
+	$ mimir
+
+can see other commands.
+
+
+
 And then..
 ----------
 

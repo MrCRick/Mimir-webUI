@@ -24,11 +24,13 @@ def list_users():
 	"""Show all users"""
 	con = sql.connect("app.db")
 	cur = con.cursor()
+	click.echo('\n(USERNAME, EMAIL, ENABLE, IS_ADMIN)\n')
 	cur.execute('SELECT username, email, enable, is_admin FROM Users')
 	users = cur.fetchall()
 
 	for u in users:
 		click.echo(u)
+	click.echo('\n')
 
 
 
@@ -58,7 +60,7 @@ def notebooks():
 @click.argument('name')
 def newNotebook(name):
 	"""Create notebook"""
-	res = requests.post(f'{APISERVER}/api/notebook', json={'name':name})
+	res = requests.post(f'{APISERVER}/api/notebook', json = { 'name' : name })
 
 	if res.status_code == 201:
 		click.echo('\nNotebook created!\n')
@@ -93,7 +95,7 @@ def trainings():
 @click.argument('name')
 def newTraining(name):
 	"""Create training"""
-	res = requests.post(f'{APISERVER}/api/training', json={'name' : name})
+	res = requests.post(f'{APISERVER}/api/training', json = { 'name' : name })
 
 	if res.status_code == 201:
 		click.echo('\nTraining created!\n')
@@ -129,7 +131,7 @@ def endpoints():
 @click.argument('training_id')
 def newEndpoint(name,training_id):
 	"""Create endpoint"""
-	res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json={'name': name, 'training_id' : training_id })
+	res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json = { 'name': name, 'training_id' : training_id })
 
 	if res.status_code == 201:
 		click.echo('\nEndpoint created!\n')
