@@ -48,7 +48,7 @@ First following this repository to create mimir DataBase: https://github.com/dan
 
 Then in terminal of your Mimir-webUI virtual env:
 
-	$ python createTables.py
+	$ python build_tables.py
 
 Now you created two tables in mimir DB.
 
