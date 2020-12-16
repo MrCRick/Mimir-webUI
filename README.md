@@ -10,13 +10,13 @@ Prerequisites
 
 You need to install:
 
-Miniconda: 
+Miniconda:
 
 https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 
-Sqlite3 and sqlitebrowser:
+MySQL:
 
-https://linuxhint.com/install_sqlite_browser_ubuntu/
+	$ sudo apt install mysql-server
 
 Pip: 
 
@@ -44,15 +44,13 @@ Now in your virtual env install all dependencies:
 Create database
 ---------------
 
-In your virtual env:
+First following this repository to create mimir DataBase: https://github.com/dandamico/Mimir-ApiServer.git
 
-	$ flask db init
+Then in terminal of your Mimir-webUI virtual env:
 
-	$ flask db migrate -m "(table name) table"
+	$ python createTables.py
 
-	$ flask db upgrade
-
-Now you created a DB in your repository.
+Now you created two tables in mimir DB.
 
 
 Set environment variables

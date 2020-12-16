@@ -1,25 +1,21 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, make_response
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
-from app.models import Users
+from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
+import mysql.connector as mysql
 import requests
 import json
 import os
 import sqlite3
 
 
-
+MYSQL_HOST=os.environ.get("MYSQL_HOST")
+MYSQL_PSSW=os.environ.get("MYSQL_PASSWORD")
+MYSQL_USER=os.environ.get("MYSQL_USER")
+MYSQL_URL=os.environ.get("MYSQL_URL")
 APISERVER = os.environ.get("APISERVER")
-
-
-
-def createDB():
-    conn = sqlite3.connect('user_object.db')
-    if conn is None:
-        conn.execute('CREATE TABLE user_object (id_user INT, id_notebook INT, id_training INT, id_endpoint INT)')
-        conn.close()
 
 
 
@@ -36,7 +32,7 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = Users(username=form.username.data, email=form.email.data)
+        user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -51,7 +47,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = Users.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
@@ -66,8 +62,11 @@ def login():
 @app.route('/profile/<username>')
 @login_required
 def user(username):
-    user = Users.query.filter_by(username=username).first_or_404()
-    return render_template('user.html', title="Profile", user=user)
+    if current_user.username != username:
+        return redirect(url_for('index'))
+    else:
+        user = User.query.filter_by(username=username).first_or_404()
+        return render_template('user.html', title="Profile", user=user)
 
 
 
@@ -136,6 +135,13 @@ def newTraining():
 
         if res.status_code == 201:
             flash(f'Training created!')
+            #db = mysql.connect(host=MYSQL_HOST, user=MYSQL_USER, passwd=MYSQL_PSSW, database='mimir')
+            #cursor = db.cursor()
+            #user_id = cursor.execute("SELECT id FROM user WHERE username = %s", (current_user.username,))
+            #cursor.execute("UPDATE user_object_id SET user_id = u{}", user_id)
+            #training_id = cursor.execute("SELECT id FROM training WHERE name = %s", (request.form['name'],))
+            #cursor.execute("UPDATE user_object_id SET training_id = %d", (training_id,))
+            #db.commit()
         else:
             flash(res.status_code)
         return redirect(url_for('trainings'))

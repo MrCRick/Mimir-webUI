@@ -1,7 +1,7 @@
 from app import db
-from app.models import Users
+from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
-import sqlite3 as sql
+import mysql.connector as mysql
 import requests
 import json
 import os
@@ -10,23 +10,26 @@ import click
 
 
 APISERVER = os.environ.get("APISERVER")
-
+MYSQL_HOST=os.environ.get("MYSQL_HOST")
+MYSQL_PSSW=os.environ.get("MYSQL_PASSWORD")
+MYSQL_USER=os.environ.get("MYSQL_USER")
+MYSQL_URL=os.environ.get("MYSQL_URL")
 
 
 @click.group()
 def cli():
     pass
-
+    
 
 
 @cli.command('users')
 def list_users():
 	"""Show all users"""
-	con = sql.connect("app.db")
-	cur = con.cursor()
+	db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+	cursor = db.cursor()
 	click.echo('\n(USERNAME, EMAIL, ENABLE, IS_ADMIN)\n')
-	cur.execute('SELECT username, email, enable, is_admin FROM Users')
-	users = cur.fetchall()
+	cursor.execute('SELECT username, email, enable, is_admin FROM user')
+	users = cursor.fetchall()
 
 	for u in users:
 		click.echo(u)
@@ -38,12 +41,13 @@ def list_users():
 @click.argument('email')
 def promote_user(email):
 	"""Make a new admin"""
-	user = Users.query.filter_by(email=email).first_or_404(description='  User ({}) not found.\n'.format(email))
+	user = User.query.filter_by(email=email).first_or_404(description='  User ({}) not found.\n'.format(email))
 
-	con = sql.connect("app.db")
-	con.execute('UPDATE Users SET enable = True WHERE email = ?', (email,))
-	con.execute('UPDATE Users SET is_admin = True WHERE email = ?', (email,))
-	con.commit()
+	db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+	cur = db.cursor()
+	cur.execute('UPDATE user SET enable = True WHERE email = %s', (email,))
+	cur.execute('UPDATE user SET is_admin = True WHERE email = %s', (email,))
+	db.commit()
 	click.echo('\nUser (' + email +') enabled and admin now.\n')
 
 
