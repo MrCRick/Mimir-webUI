@@ -30,17 +30,15 @@ Pipenv:
 Create virtual environment
 --------------------------
 
-In your directory create a virtual env with command:
-
-    $ pipenv shell
-    
-
 Now in your virtual env install all dependencies:
 
     $ pipenv install --dev
-    
 
+In your directory create a virtual env with command:
 
+    $ pipenv shell
+   
+   
 Create database
 ---------------
 
