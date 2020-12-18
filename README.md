@@ -16,7 +16,7 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 
 MySQL:
 
-	$ sudo apt install mysql-server
+https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
 
 Pip: 
 
@@ -30,11 +30,11 @@ Pipenv:
 Create virtual environment
 --------------------------
 
-Now in your virtual env install all dependencies:
+Install all repository dependencies:
 
     $ pipenv install --dev
 
-In your directory create a virtual env with command:
+Create a virtual env with command:
 
     $ pipenv shell
    
