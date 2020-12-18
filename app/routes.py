@@ -92,13 +92,12 @@ def newNotebook():
 
             dates = json.loads(res.text)
             notebook_id = dates.get('id')
-            notebook = "notebook"
 
             db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
             cur = db.cursor()
-            cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (notebook_id, notebook, current_user.username,))
+            cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (notebook_id, "notebook", current_user.username,))
             db.commit()
-
+            db.close()
 
             flash(f'Notebook created!')
         else:
@@ -117,6 +116,13 @@ def deleteNotebook():
         res = requests.delete(f'{APISERVER}/api/notebook/{id_to_delete}')
 
         if res.status_code == 200:
+
+            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+            cur = db.cursor()
+            cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"notebook",))
+            db.commit()
+            db.close()
+
             flash(f'Notebook eliminated!')
         else:
             flash(res.status_code)
@@ -150,12 +156,12 @@ def newTraining():
 
             dates = json.loads(res.text)
             training_id = dates.get('id')
-            training = "training"
 
             db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
             cur = db.cursor()
-            cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (training_id, training, current_user.username,))
+            cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (training_id, "training", current_user.username,))
             db.commit()
+            db.close()
 
             flash(f'Training created!')
         else:
@@ -174,6 +180,13 @@ def deleteTraining():
         res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
 
         if res.status_code == 200:
+
+            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+            cur = db.cursor()
+            cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"training",))
+            db.commit()
+            db.close()
+
             flash(f'Training eliminated!')
         else:
             flash(res.status_code)
@@ -203,6 +216,16 @@ def newEndpoint():
         res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json={'name': request.form['name'], 'training_id' : request.form['training_id']})
 
         if res.status_code == 201:
+
+            dates = json.loads(res.text)
+            endpoint_id = dates.get('id')
+
+            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+            cur = db.cursor()
+            cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (endpoint_id, "endpoint", current_user.username,))
+            db.commit()
+            db.close()
+
             flash(f'Endpoint created!')
         else:
             flash(res.status_code)
@@ -220,6 +243,13 @@ def deleteEndpoint():
         res = requests.delete(f'{APISERVER}/api/endpoint/{id_to_delete}')
 
         if res.status_code == 200:
+
+            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+            cur = db.cursor()
+            cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"endpoint",))
+            db.commit()
+            db.close()
+
             flash(f'Endpoint eliminated!')
         else:
             flash(res.status_code)
