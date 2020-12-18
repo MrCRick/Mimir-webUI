@@ -18,5 +18,6 @@ def createTables():
 	db = mysql.connect(host=MYSQL_HOST, user=MYSQL_USER, passwd=MYSQL_PSSW, database='mimir')
 	cursor = db.cursor()
 	cursor.execute("CREATE TABLE user ( id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(120), email VARCHAR(120), password_hash VARCHAR(120), enable BOOLEAN, is_admin BOOLEAN )")
-	cursor.execute("CREATE TABLE user_object_id ( id INT AUTO_INCREMENT PRIMARY KEY, user_id INT, notebook_id INT, training_id INT, endpoint_id INT)")
+	cursor.execute("CREATE TABLE user_object_id ( id INT AUTO_INCREMENT PRIMARY KEY, object_id INT, object_type VARCHAR(120), user_name VARCHAR(120))")
 	db.commit()
+	db.close()

@@ -18,7 +18,7 @@ flask-admin = "*"
 flask-httpauth = "*"
 requests = "*"
 pymysql = "*"
-datetime = "*"
+cryptography = "*"
 
 [requires]
 python_version = "3.*"

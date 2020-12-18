@@ -20,25 +20,6 @@ class User(UserMixin, db.Model):
         return '<User {}>'.format(self.username)
 
 
-
-    def serialize(self):
-       return{
-            "id": self.id,
-            "username": self.username,
-            "email": self.email,
-            "password_hash": self.password_hash,
-            "enable": self.enable,
-            "is_admin": self.is_admin
-       }
-
-
-
-    def deserialize(self, data):
-        for field in ['id', 'username', 'email', 'password_hash', 'enable', 'is_admin']:
-            if field in data:
-                setattr(self, field, data[field])
-
-
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -53,31 +34,13 @@ class User(UserMixin, db.Model):
 class Object_ID(db.Model):
     __tablename__= "user_object_id"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    notebook_id = db.Column(db.Integer)
-    training_id = db.Column(db.Integer)
-    endpoint_id = db.Column(db.Integer)
-
+    object_id = db.Column(db.Integer)
+    object_type = db.Column(db.String(64))
+    user_name = db.Column(db.String(64))
 
 
     def __repr__(self):
-        return '<Object_ID {}>'.format(self.user_id)
-
-
-
-    def serialize(self):
-       return{
-            "id": self.id,
-
-       }
-
-
-
-    def deserialize(self, data):
-        for field in ['id', 'user_id', 'notebook_id', 'training_id', 'endpoint_id']:
-            if field in data:
-                setattr(self, field, data[field])
-
+        return '<Object_ID {}>'.format(self.object_id)
 
 
 

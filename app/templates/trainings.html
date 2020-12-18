@@ -31,8 +31,16 @@
 
 	<br>
 	<div>
-		<form action="/newTraining" method="post">
-			<p>Create new Training: <input name="name" placeholder="training name" minlength="4" maxlength="20" required="">
+		<form action="/newTraining" method="post" enctype="multipart/form-data">
+			<p>
+				Create new Training: 
+				<input name="name" placeholder="training name" minlength="4" maxlength="20" required="">
+			</p>
+			<p>
+				File: 
+				<input name="file" type="file" required="" >
+			</p>
+			<p>
 				<input type="submit" value="Create">
 			</p>
 		</form>
@@ -41,6 +49,7 @@
 			<tr>
 				<th>ID</th>
 				<th>Name</th>
+				<th>File_name</th>
 				<th>Endpoint_count</th>
 				<th>Update Time</th>
 				<th>Status</th>
@@ -50,6 +59,7 @@
 			<tr>
 				<td>{{ training['id'] }}</td>
 				<td>{{ training['name'] }}</td>
+				<td>{{ training['filename'] }}</td>
 				<td>{{ training['endpoints_count'] }}</td>
 				<td>{{ training['created_date'] }}</td>
 				<td>{{ training['status'] }}</td>

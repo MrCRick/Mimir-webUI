@@ -8,8 +8,6 @@ USERS = []
 
 OBJECTS = []
 
-
 config.createTables()
 
-
-print("\n Tables created in 'mimir' DB!\n")
+print("\nTables created in 'mimir' DB!\n")

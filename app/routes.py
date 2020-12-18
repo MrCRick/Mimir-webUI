@@ -86,9 +86,20 @@ def notebooks():
 @login_required
 def newNotebook():
     if current_user.enable:
-        res = requests.post(f'{APISERVER}/api/notebook', json={'name' : request.form.get('name')})
+        res = requests.post(f'{APISERVER}/api/notebook', json={'name' : request.form['name']})
 
         if res.status_code == 201:
+
+            dates = json.loads(res.text)
+            notebook_id = dates.get('id')
+            notebook = "notebook"
+
+            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+            cur = db.cursor()
+            cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (notebook_id, notebook, current_user.username,))
+            db.commit()
+
+
             flash(f'Notebook created!')
         else:
             flash(res.status_code)
@@ -131,17 +142,22 @@ def trainings():
 @login_required
 def newTraining():
     if current_user.enable:
-        res = requests.post(f'{APISERVER}/api/training', json={'name' : request.form['name']})
+        name = request.form['name']
+        files = {'file': request.files['file'].name}
+        res = requests.post(f'{APISERVER}/api/training/{name}', files=files)
 
         if res.status_code == 201:
+
+            dates = json.loads(res.text)
+            training_id = dates.get('id')
+            training = "training"
+
+            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+            cur = db.cursor()
+            cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (training_id, training, current_user.username,))
+            db.commit()
+
             flash(f'Training created!')
-            #db = mysql.connect(host=MYSQL_HOST, user=MYSQL_USER, passwd=MYSQL_PSSW, database='mimir')
-            #cursor = db.cursor()
-            #user_id = cursor.execute("SELECT id FROM user WHERE username = %s", (current_user.username,))
-            #cursor.execute("UPDATE user_object_id SET user_id = u{}", user_id)
-            #training_id = cursor.execute("SELECT id FROM training WHERE name = %s", (request.form['name'],))
-            #cursor.execute("UPDATE user_object_id SET training_id = %d", (training_id,))
-            #db.commit()
         else:
             flash(res.status_code)
         return redirect(url_for('trainings'))
