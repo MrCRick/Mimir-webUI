@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, make_response
+from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
@@ -8,7 +8,6 @@ import mysql.connector as mysql
 import requests
 import json
 import os
-import sqlite3
 
 
 MYSQL_HOST=os.environ.get("MYSQL_HOST")
@@ -74,9 +73,24 @@ def user(username):
 @login_required
 def notebooks():
     if current_user.enable:
-        res = requests.get(f'{APISERVER}/api/notebook').content
-        all_notebook = json.loads(res)
-        return render_template("notebooks.html", title="Notebooks", notebooks=all_notebook)
+
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        cur = db.cursor()
+        cur.execute('SELECT * FROM user_object_id')
+        objects = cur.fetchall()
+        db.close()    
+
+        notebooks = []
+        for notebook in objects:
+            if notebook[3] == current_user.username and notebook[2] == "notebook":
+                notebook_id = notebook[1]
+
+                res = requests.get(f'{APISERVER}/api/notebook/{notebook_id}').content
+                notebook = json.loads(res)
+
+                notebooks.append(notebook)
+
+        return render_template("notebooks.html", title="Notebooks", notebooks=notebooks)
     else:
         return redirect(url_for('403'))
 
@@ -136,24 +150,40 @@ def deleteNotebook():
 @login_required
 def trainings():
     if current_user.enable:
-        res = requests.get(f'{APISERVER}/api/training').content
-        all_training= json.loads(res)
-        return render_template("trainings.html", title="Trainings", trainings=all_training)
+
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        cur = db.cursor()
+        cur.execute('SELECT * FROM user_object_id')
+        objects = cur.fetchall()
+        db.close()    
+
+        trainings = []
+        for training in objects:
+            if training[3] == current_user.username and training[2] == "training":
+                training_id = training[1]
+
+                res = requests.get(f'{APISERVER}/api/training/{training_id}').content
+                training = json.loads(res)
+
+                trainings.append(training)
+
+        return render_template("trainings.html", title="Trainings", trainings=trainings)
     else:
         return redirect(url_for('403'))
 
-
+ 
 
 @app.route('/newTraining', methods=['POST'])
 @login_required
 def newTraining():
     if current_user.enable:
         name = request.form['name']
-        files = {'file': request.files['file'].name}
+        file = request.files['file']
+        files = {'file': file.read() }
         res = requests.post(f'{APISERVER}/api/training/{name}', files=files)
 
         if res.status_code == 201:
-
+            flash(file.filename)
             dates = json.loads(res.text)
             training_id = dates.get('id')
 
@@ -176,6 +206,7 @@ def newTraining():
 @login_required
 def deleteTraining():
     if current_user.enable:
+
         id_to_delete = request.form['id_to_delete']
         res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
 
@@ -196,14 +227,28 @@ def deleteTraining():
 
 
 
-@app.route('/endpoints', methods=['GET'])
+@app.route('/endpoints')
 @login_required
 def endpoints():
     if current_user.enable:
-        res = requests.get(f'{APISERVER}/api/endpoints').content
-        all_endpoint = json.loads(res)
-        flash(f'Sorry, endpoints are not enabled.')
-        return render_template("endpoints.html", title="Endpoint", endpoints=all_endpoint)
+
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        cur = db.cursor()
+        cur.execute('SELECT * FROM user_object_id')
+        objects = cur.fetchall()
+        db.close()    
+
+        endpointss = []
+        for endpoint in objects:
+            if endpoint[3] == current_user.username and endpoint[2] == "endpoint":
+                endpoint_id = endpoint[1]
+
+                res = requests.get(f'{APISERVER}/api/endpoint/{endpoint_id}').content
+                endpoint = json.loads(res)
+
+                endpointss.append(endpoint)
+
+        return render_template("endpoints.html", title="Endpoints", endpoints=endpoints)
     else:
         return redirect(url_for('403'))
 

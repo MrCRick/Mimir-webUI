@@ -30,7 +30,8 @@ def list_users():
 	click.echo('\n(USERNAME, EMAIL, ENABLE, IS_ADMIN)\n')
 	cursor.execute('SELECT username, email, enable, is_admin FROM user')
 	users = cursor.fetchall()
-
+	db.close()
+	
 	for u in users:
 		click.echo(u)
 	click.echo('\n')
