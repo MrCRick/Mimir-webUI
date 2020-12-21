@@ -69,7 +69,7 @@ def user(username):
 
 
 
-@app.route('/notebooks', methods=['GET'])
+@app.route('/notebooks')
 @login_required
 def notebooks():
     if current_user.enable:
@@ -89,6 +89,15 @@ def notebooks():
                 notebook = json.loads(res)
 
                 notebooks.append(notebook)
+
+            else:  
+                if current_user.is_admin and notebook[2] == "notebook":
+                    notebook_id = notebook[1]
+
+                    res = requests.get(f'{APISERVER}/api/notebook/{notebook_id}').content
+                    notebook = json.loads(res)
+
+                    notebooks.append(notebook)
 
         return render_template("notebooks.html", title="Notebooks", notebooks=notebooks)
     else:
@@ -166,24 +175,35 @@ def trainings():
                 training = json.loads(res)
 
                 trainings.append(training)
+            else:
+                if current_user.is_admin and training[2] == "training":
+
+                    training_id = training[1]
+
+                    res = requests.get(f'{APISERVER}/api/training/{training_id}').content
+                    training = json.loads(res)
+
+                    trainings.append(training)
 
         return render_template("trainings.html", title="Trainings", trainings=trainings)
     else:
         return redirect(url_for('403'))
 
- 
+
 
 @app.route('/newTraining', methods=['POST'])
 @login_required
 def newTraining():
     if current_user.enable:
         name = request.form['name']
-        file = request.files['file']
-        files = {'file': file.read() }
+        files = {'file': request.files['files'].filename }
+        f = files.get('file')
+
+        print(f)
+        print(files)
         res = requests.post(f'{APISERVER}/api/training/{name}', files=files)
 
         if res.status_code == 201:
-            flash(file.filename)
             dates = json.loads(res.text)
             training_id = dates.get('id')
 
@@ -238,7 +258,7 @@ def endpoints():
         objects = cur.fetchall()
         db.close()    
 
-        endpointss = []
+        endpoints = []
         for endpoint in objects:
             if endpoint[3] == current_user.username and endpoint[2] == "endpoint":
                 endpoint_id = endpoint[1]
@@ -246,7 +266,16 @@ def endpoints():
                 res = requests.get(f'{APISERVER}/api/endpoint/{endpoint_id}').content
                 endpoint = json.loads(res)
 
-                endpointss.append(endpoint)
+                endpoints.append(endpoint)
+
+            else:
+                if current_user.is_admin and endpoint[2] == "endpoint":
+                    endpoint_id = endpoint[1]
+
+                    res = requests.get(f'{APISERVER}/api/endpoint/{endpoint_id}').content
+                    endpoint = json.loads(res)
+
+                    endpoints.append(endpoint)
 
         return render_template("endpoints.html", title="Endpoints", endpoints=endpoints)
     else:

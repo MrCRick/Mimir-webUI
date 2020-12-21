@@ -50,13 +50,14 @@
 				<th>Status</th>
 				<th>Delete</th>
 			</tr>
-			{% for notebook in notebooks['notebooks'] %}
+			{% for notebook in notebooks %}
+			{% if notebook %}
 			<tr>
 				<td>{{ notebook['id'] }}</td>
 				<td>{{ notebook['name'] }}</td>
 				<td>{{ notebook['deployment_name'] }}</td>
 				<td>{{ notebook['docker_image_name'] }}</td>
-				<td><a href="http://pippo-1.notebooks.kubernetes.local/">{{ notebook['notebook_url'] }}</td>
+				<td><a href="">{{ notebook['notebook_url'] }}</td>
 				<td>{{ notebook['created_date'] }}</td>
 				<td>{{ notebook['status'] }}</td>
 				<td>
@@ -66,6 +67,7 @@
 					</form>
 				</td>
 			</tr>
+			{% endif %}
 			{% endfor %}
 		</table>
 		<br>

@@ -16,10 +16,11 @@ MYSQL_USER=os.environ.get("MYSQL_USER")
 MYSQL_URL=os.environ.get("MYSQL_URL")
 
 
+
 @click.group()
 def cli():
     pass
-    
+
 
 
 @cli.command('users')
