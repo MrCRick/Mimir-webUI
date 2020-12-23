@@ -1,6 +1,5 @@
 from app import db
 from app.models import User
-from flask_login import current_user, login_user, logout_user, login_required
 import mysql.connector as mysql
 import requests
 import json
@@ -24,136 +23,360 @@ def cli():
 
 
 @cli.command('users')
-def list_users():
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def list_users(username, password):
 	"""Show all users"""
-	db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
-	cursor = db.cursor()
-	click.echo('\n(USERNAME, EMAIL, ENABLE, IS_ADMIN)\n')
-	cursor.execute('SELECT username, email, enable, is_admin FROM user')
-	users = cursor.fetchall()
-	db.close()
-	
-	for u in users:
-		click.echo(u)
-	click.echo('\n')
+	user = User.query.filter_by(username=username).first_or_404(description='Invalid fields')
+
+	if user.is_admin == True:
+
+		db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+		cursor = db.cursor()
+		cursor.execute('SELECT username, email, enable, is_admin FROM user')
+		users = cursor.fetchall()
+		db.close()
+
+		for u in users:
+			click.echo(u)
+	else:
+		click.echo('Access denied.')
 
 
 
 @cli.command('make-admin')
 @click.argument('email')
-def promote_user(email):
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def promote_user(email,username,password):
 	"""Make a new admin"""
-	user = User.query.filter_by(email=email).first_or_404(description='  User ({}) not found.\n'.format(email))
+	user = User.query.filter_by(email=email).first_or_404(description='Invalid fields')
 
 	db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
 	cur = db.cursor()
-	cur.execute('UPDATE user SET enable = True WHERE email = %s', (email,))
-	cur.execute('UPDATE user SET is_admin = True WHERE email = %s', (email,))
-	db.commit()
-	click.echo('\nUser (' + email +') enabled and admin now.\n')
+	cur.execute('SELECT COUNT(*) FROM user')
+	users = cur.fetchone()
+
+	if users == (1,):
+		cur.execute('UPDATE user SET enable = True WHERE email = %s', (email,))
+		cur.execute('UPDATE user SET is_admin = True WHERE email = %s', (email,))
+		db.commit()
+		db.close()
+		click.echo('User (' + email +') enabled and admin now.')
+	else:
+		click.echo('Access denied.')
 
 
 
 @cli.command('notebooks')
-def notebooks():
-	"""Show all notebooks"""
-	res = requests.get(f'{APISERVER}/api/notebook').content
-	click.echo(res)
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def notebooks(username,password):
+	"""Show your notebook list"""
+	user = User.query.filter_by(username=username).first_or_404(description='Invalid fields')
+
+	if user.enable:
+
+		db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+		cur = db.cursor()
+		cur.execute('SELECT * FROM user_object_id')
+		objects = cur.fetchall()
+		db.close()
+
+		notebooks = []
+		for notebook in objects:
+			if notebook[3] == user.username and notebook[2] == "notebook":
+				notebook_id = notebook[1]
+
+				res = requests.get(f'{APISERVER}/api/notebook/{notebook_id}').content
+				notebook = json.loads(res)
+
+				notebooks.append(notebook)
+			else:
+				if user.is_admin and notebook[2] == "notebook":
+					notebook_id = notebook[1]
+
+					res = requests.get(f'{APISERVER}/api/notebook/{notebook_id}').content
+					notebook = json.loads(res)
+
+					notebooks.append(notebook)
+
+		click.echo(notebooks)
+	else:
+		click.echo('You can\'t create notebook')
 
 
 
 @cli.command('create-notebook')
 @click.argument('name')
-def newNotebook(name):
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def newNotebook(username,name,password):
 	"""Create notebook"""
-	res = requests.post(f'{APISERVER}/api/notebook', json = { 'name' : name })
+	user = User.query.filter_by(username=username).first_or_404(description='Invalid fields')
 
-	if res.status_code == 201:
-		click.echo('\nNotebook created!\n')
-		click.echo(res.content)
+	if user.enable:
+		res = requests.post(f'{APISERVER}/api/notebook', json = { 'name' : name })
+
+		if res.status_code == 201:
+
+			dates = json.loads(res.text)
+			notebook_id = dates.get('id')
+
+			db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+			cur = db.cursor()
+			cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (notebook_id, "notebook", user.username,))
+			db.commit()
+			db.close()
+
+			click.echo('Notebook created!\n')
+			click.echo(res.content)
+		else:
+			click.echo(res.status_code)
 	else:
-		click.echo(res.status_code)
+		click.echo('You can\'t create notebook')
 
 
 
 @cli.command('delete-notebook')
 @click.argument('id_to_delete')
-def deleteNotebook(id_to_delete):
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def deleteNotebook(username,id_to_delete,password):
 	"""Delete notebook"""
-	res = requests.delete(f'{APISERVER}/api/notebook/{id_to_delete}')
+	user = User.query.filter_by(username=username).first_or_404(description='Invalid fields')
 
-	if res.status_code == 200:
-		click.echo('\nNotebook eliminated!\n')
+	if user.enable:
+
+		db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+		cur = db.cursor()
+		cur.execute('SELECT * FROM user_object_id WHERE user_name = %s AND object_id = %s', (user.username, id_to_delete))
+		notebook_to_delete = cur.fetchone()
+		db.close()
+
+		if notebook_to_delete:
+			res = requests.delete(f'{APISERVER}/api/notebook/{id_to_delete}')
+
+			if res.status_code == 200:
+
+				db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+				cur = db.cursor()
+				cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"notebook",))
+				db.commit()
+				db.close()
+
+				click.echo('Notebook eliminated')
+			else:
+				click.echo(res.status_code)
+		else:
+			click.echo('Invalid notebook_id')
 	else:
-		click.echo(res.status_code)
+		click.echo('You can\'t delete notebook')
 
 
 
 @cli.command('trainings')
-def trainings():
-	"""Show all trainings"""
-	res = requests.get(f'{APISERVER}/api/training').content
-	click.echo(res)
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def trainings(username,password):
+	"""Show your training list"""
+	user = User.query.filter_by(username=username).first_or_404(description='Invalid fields')
+
+	if user.enable == True:
+		db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+		cur = db.cursor()
+		cur.execute('SELECT * FROM user_object_id')
+		objects = cur.fetchall()
+		db.close()
+
+		trainings = []
+		for training in objects:
+			if training[3] == user.username and training[2] == "training":
+				training_id = training[1]
+
+				res = requests.get(f'{APISERVER}/api/training/{training_id}').content
+				training = json.loads(res)
+
+				trainings.append(training)
+			elif user.is_admin and training[2] == "training":
+					training_id = training[1]
+					res = requests.get(f'{APISERVER}/api/training/{training_id}').content
+					training = json.loads(res)
+
+					trainings.append(training)
+		click.echo(trainings)
+	else:
+		click.echo('You can\'t create training')
 
 
 
 @cli.command('create-training')
 @click.argument('name')
-def newTraining(name):
+@click.argument('file', type=click.File('r'))
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def newTraining(username,name,file,password):
 	"""Create training"""
-	res = requests.post(f'{APISERVER}/api/training', json = { 'name' : name })
+	user = User.query.filter_by(username=username).first_or_404(description='Invalid fields')
 
-	if res.status_code == 201:
-		click.echo('\nTraining created!\n')
-		click.echo(res.content)
+	if user.enable:
+		files = {'file': file}
+		res = requests.post(f'{APISERVER}/api/training/{name}',files=files)
+
+		if res.status_code == 201:
+
+			dates = json.loads(res.text)
+			training_id = dates.get('id')
+
+			db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+			cur = db.cursor()
+			cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (training_id, "training", user.username,))
+			db.commit()
+			db.close()
+
+			click.echo('Training created!\n')
+			click.echo(res.content)
+		else:
+			click.echo(res.status_code)
 	else:
-		click.echo(res.status_code)
+		click.echo('You can\'t create training')
 
 
 
 @cli.command('delete-training')
 @click.argument('id_to_delete')
-def deleteTraining(id_to_delete):
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def deleteTraining(username,id_to_delete,password):
 	"""Delete training"""
-	res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
+	user = User.query.filter_by(username=username).first_or_404(description='Invalid fields')
 
-	if res.status_code == 200:
-		click.echo('\nTraining eliminated!\n')
+	if user.enable:
+
+		db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+		cur = db.cursor()
+		cur.execute('SELECT * FROM user_object_id WHERE user_name = %s AND object_id = %s', (user.username, id_to_delete))
+		training_to_delete = cur.fetchone()
+		db.close()
+
+		if training_to_delete:
+			res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
+
+			if res.status_code == 200:
+
+				db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+				cur = db.cursor()
+				cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"training",))
+				db.commit()
+				db.close()
+
+				click.echo('Training eliminated')
+			else:
+				click.echo(res.status_code)
+		else:
+			click.echo('Invalid training_id')
 	else:
-		click.echo(res.status_code)
-
+		click.echo('You can\'t delete training')
 
 
 @cli.command('endpoints')
-def endpoints():
-	"""Show all endpoints"""
-	res = requests.get(f'{APISERVER}/api/endpoints').content
-	click.echo(res)
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def endpoints(username,password):
+	"""Show your endpoint list"""
+	user = User.query.filter_by(username=username).first()
+	
+	if user.enable:
+
+		db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+		cur = db.cursor()
+		cur.execute('SELECT * FROM user_object_id')
+		objects = cur.fetchall()
+		db.close()
+
+		endpoints = []
+		for endpoint in objects:
+			if endpoint[3] == user.username and endpoint[2] == "endpoint":
+				endpoint_id = endpoint[1]
+
+				res = requests.get(f'{APISERVER}/api/endpoint/{endpoint_id}').content
+				endpoint = json.loads(res)
+
+				endpoints.append(endpoint)
+			else:
+				if user.is_admin and endpoint[2] == "endpoint":
+					endpoint_id = endpoint[1]
+
+					res = requests.get(f'{APISERVER}/api/endpoint/{endpoint_id}').content
+					endpoint = json.loads(res)
+
+					endpoints.append(endpoint)
+
+		click.echo(endpoints)
+	else:
+		click.echo('Password error or you can\'t create endpoint')
 
 
 
 @cli.command('create-endpoint')
 @click.argument('name')
 @click.argument('training_id')
-def newEndpoint(name,training_id):
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def newEndpoint(username,name,training_id,password):
 	"""Create endpoint"""
-	res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json = { 'name': name, 'training_id' : training_id })
+	user = User.query.filter_by(username=username).first_or_404(description='Invalid fields')
 
-	if res.status_code == 201:
-		click.echo('\nEndpoint created!\n')
-		click.echo(res.content)
+	if user.enable:
+		res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json = { 'name': name, 'training_id' : training_id })
+
+		if res.status_code == 201:
+
+			db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+			cur = db.cursor()
+			cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (endpoint_id, "endpoint", user.username,))
+			db.commit()
+			db.close()
+			click.echo('Endpoint created\n')
+			click.echo(res.content)
+		else:
+			click.echo(res.status_code)
 	else:
-		click.echo(res.status_code)
+		click.echo('You can\'t create endpoint')
 
 
 
 @cli.command('delete-endpoint')
 @click.argument('id_to_delete')
-def deleteTraining(id_to_delete):
+@click.option('--username', prompt='Your username')
+@click.option('--password', prompt=True, hide_input=True)
+def deleteTraining(username,id_to_delete,password):
 	"""Delete endpoint"""
-	res = requests.delete(f'{APISERVER}/api/endpoint/{id_to_delete}')
+	user = User.query.filter_by(username=username).first_or_404(description='Invalid fields')
 
-	if res.status_code == 200:
-		click.echo('\nEndpoint eliminated!\n')
+	if user.enable:
+
+		db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+		cur = db.cursor()
+		cur.execute('SELECT * FROM user_object_id WHERE user_name = %s AND object_id = %s', (user.username, id_to_delete))
+		endpoint_to_delete = cur.fetchone()
+		db.close()
+
+		if endpoint_to_delete:
+			res = requests.delete(f'{APISERVER}/api/endpoint/{id_to_delete}')
+
+			if res.status_code == 200:
+
+				db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+				cur = db.cursor()
+				cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"notebook",))
+				db.commit()
+				db.close()
+
+				click.echo('\nEndpoint eliminated!\n')
+			else:
+				click.echo(res.status_code)
+		else:
+			click.echo('Invalid endpoint_id')
 	else:
-		click.echo(res.status_code)
+		click.echo('You can\'t delete endpoint')

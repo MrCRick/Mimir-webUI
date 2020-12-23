@@ -23,11 +23,10 @@ login = LoginManager(app)
 
 
 from app import routes, models, errors
-from app.models import User, Controller, Object_ID
+from app.models import User, Controller
 
 
 admin.add_view(Controller(User, db.session))
-admin.add_view(Controller(Object_ID, db.session))
 
 
 if '__name__' == '__main__':

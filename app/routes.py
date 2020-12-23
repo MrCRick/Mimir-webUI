@@ -136,19 +136,27 @@ def newNotebook():
 def deleteNotebook():
     if current_user.enable:
         id_to_delete = request.form['id_to_delete']
-        res = requests.delete(f'{APISERVER}/api/notebook/{id_to_delete}')
 
-        if res.status_code == 200:
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        cur = db.cursor()
+        cur.execute('SELECT * FROM user_object_id WHERE user_name = %s AND object_id = %s', (current_user.username, id_to_delete))
+        notebook_to_delete = cur.fetchone()
+        db.close()
 
-            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
-            cur = db.cursor()
-            cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"notebook",))
-            db.commit()
-            db.close()
+        if notebook_to_delete:
+            res = requests.delete(f'{APISERVER}/api/notebook/{id_to_delete}')
 
-            flash(f'Notebook eliminated!')
-        else:
-            flash(res.status_code)
+            if res.status_code == 200:
+
+                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+                cur = db.cursor()
+                cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"notebook",))
+                db.commit()
+                db.close()
+
+                flash(f'Notebook eliminated!')
+            else:
+                flash(res.status_code)
         return redirect(url_for('notebooks'))
     else:
         return redirect(url_for('403'))
@@ -196,13 +204,12 @@ def trainings():
 def newTraining():
     if current_user.enable:
         name = request.form['name']
-        files = {'file': request.files['files'].filename }
-        f = files.get('file')
-
-        print(f)
+        file = request.files['file']
+        files = {'file': file}
         print(files)
-        res = requests.post(f'{APISERVER}/api/training/{name}', files=files)
 
+        res = requests.post(f'{APISERVER}/api/training/{name}',files=files)
+        
         if res.status_code == 201:
             dates = json.loads(res.text)
             training_id = dates.get('id')
@@ -228,19 +235,27 @@ def deleteTraining():
     if current_user.enable:
 
         id_to_delete = request.form['id_to_delete']
-        res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
 
-        if res.status_code == 200:
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        cur = db.cursor()
+        cur.execute('SELECT * FROM user_object_id WHERE user_name = %s AND object_id = %s', (current_user.username, id_to_delete))
+        training_to_delete = cur.fetchone()
+        db.close()
 
-            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
-            cur = db.cursor()
-            cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"training",))
-            db.commit()
-            db.close()
+        if training_to_delete:
+            res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
 
-            flash(f'Training eliminated!')
-        else:
-            flash(res.status_code)
+            if res.status_code == 200:
+
+                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+                cur = db.cursor()
+                cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"training",))
+                db.commit()
+                db.close()
+
+                flash(f'Training eliminated!')
+            else:
+                flash(res.status_code)
         return redirect(url_for('trainings'))
     else:
         return redirect(url_for('403'))
@@ -313,20 +328,29 @@ def newEndpoint():
 @login_required
 def deleteEndpoint():
     if current_user.enable:
+
         id_to_delete = request.form['id_to_delete']
-        res = requests.delete(f'{APISERVER}/api/endpoint/{id_to_delete}')
 
-        if res.status_code == 200:
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        cur = db.cursor()
+        cur.execute('SELECT * FROM user_object_id WHERE user_name = %s AND object_id = %s', (current_user.username, id_to_delete))
+        endpoint_to_delete = cur.fetchone()
+        db.close()
 
-            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
-            cur = db.cursor()
-            cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"endpoint",))
-            db.commit()
-            db.close()
+        if endpoint_to_delete:
+            res = requests.delete(f'{APISERVER}/api/endpoint/{id_to_delete}')
 
-            flash(f'Endpoint eliminated!')
-        else:
-            flash(res.status_code)
+            if res.status_code == 200:
+
+                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+                cur = db.cursor()
+                cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"endpoint",))
+                db.commit()
+                db.close()
+
+                flash(f'Endpoint eliminated!')
+            else:
+                flash(res.status_code)
         return redirect(url_for('endpoints'))
     else:
         return redirect(url_for('403'))

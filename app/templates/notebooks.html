@@ -57,7 +57,7 @@
 				<td>{{ notebook['name'] }}</td>
 				<td>{{ notebook['deployment_name'] }}</td>
 				<td>{{ notebook['docker_image_name'] }}</td>
-				<td><a href="">{{ notebook['notebook_url'] }}</td>
+				<td><a href="http://pippo-1.notebooks.kubernetes.local/tree?">{{ notebook['notebook_url'] }}</a></td>
 				<td>{{ notebook['created_date'] }}</td>
 				<td>{{ notebook['status'] }}</td>
 				<td>
@@ -80,6 +80,5 @@
 			</ul>
 			{% endif %}
 		{% endwith %}
-
 	</div>
 {% endblock %}

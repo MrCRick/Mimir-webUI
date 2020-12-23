@@ -10,4 +10,4 @@ OBJECTS = []
 
 config.createTables()
 
-print("\nTables created in 'mimir' DB!\n")
+print("Tables created")
