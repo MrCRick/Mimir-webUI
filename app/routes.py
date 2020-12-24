@@ -143,7 +143,7 @@ def deleteNotebook():
         notebook_to_delete = cur.fetchone()
         db.close()
 
-        if notebook_to_delete:
+        if notebook_to_delete or current_user.is_admin:
             res = requests.delete(f'{APISERVER}/api/notebook/{id_to_delete}')
 
             if res.status_code == 200:
@@ -206,7 +206,6 @@ def newTraining():
         name = request.form['name']
         file = request.files['file']
         files = {'file': file}
-        print(files)
 
         res = requests.post(f'{APISERVER}/api/training/{name}',files=files)
         
@@ -242,7 +241,7 @@ def deleteTraining():
         training_to_delete = cur.fetchone()
         db.close()
 
-        if training_to_delete:
+        if training_to_delete or current_user.is_admin:
             res = requests.delete(f'{APISERVER}/api/training/{id_to_delete}')
 
             if res.status_code == 200:
@@ -337,7 +336,7 @@ def deleteEndpoint():
         endpoint_to_delete = cur.fetchone()
         db.close()
 
-        if endpoint_to_delete:
+        if endpoint_to_delete or current_user.is_admin:
             res = requests.delete(f'{APISERVER}/api/endpoint/{id_to_delete}')
 
             if res.status_code == 200:
