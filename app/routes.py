@@ -15,7 +15,7 @@ MYSQL_PSSW=os.environ.get("MYSQL_PASSWORD")
 MYSQL_USER=os.environ.get("MYSQL_USER")
 MYSQL_URL=os.environ.get("MYSQL_URL")
 APISERVER = os.environ.get("APISERVER")
-
+UPLOAD_FILE = os.environ.get("UPLOAD_FILE")
 
 
 @app.route('/')
@@ -205,10 +205,13 @@ def newTraining():
     if current_user.enable:
         name = request.form['name']
         file = request.files['file']
-        files = {'file': file}
+        filename = file.filename
+        upload_file = os.environ.get("UPLOAD_FILE")
+        #open mi permette di selezionare il path da dove poter prendere il file
+        files={'file': (open(upload_file + filename, 'r'))}
 
         res = requests.post(f'{APISERVER}/api/training/{name}',files=files)
-        
+
         if res.status_code == 201:
             dates = json.loads(res.text)
             training_id = dates.get('id')
@@ -290,7 +293,6 @@ def endpoints():
                     endpoint = json.loads(res)
 
                     endpoints.append(endpoint)
-
         return render_template("endpoints.html", title="Endpoints", endpoints=endpoints)
     else:
         return redirect(url_for('403'))
@@ -301,22 +303,37 @@ def endpoints():
 @login_required
 def newEndpoint():
     if current_user.enable:
-        res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json={'name': request.form['name'], 'training_id' : request.form['training_id']})
 
-        if res.status_code == 201:
+        name = request.form['name']
+        training_id = request.form['training_id']
 
-            dates = json.loads(res.text)
-            endpoint_id = dates.get('id')
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        cur = db.cursor()
+        cur.execute('SELECT * FROM user_object_id WHERE object_id =%s AND object_type=%s AND user_name=%s',(training_id,"training", current_user.username,))
+        training = cur.fetchone()
+        db.close()
 
-            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
-            cur = db.cursor()
-            cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (endpoint_id, "endpoint", current_user.username,))
-            db.commit()
-            db.close()
-
-            flash(f'Endpoint created!')
+        if training == None:
+            flash('Invalid training id')
         else:
-            flash(res.status_code)
+            training_id = training[1]
+            res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json={'name': name, 'training_id' : training_id})
+
+            if res.status_code == 201:
+
+                dates = json.loads(res.text)
+                endpoint_id = dates.get('id')
+
+                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+                cur = db.cursor()
+                cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (endpoint_id, "endpoint", current_user.username,))
+                db.commit()
+                db.close()
+
+                flash(f'Endpoint created!')
+            else:
+                flash(res.status_code)
+        
         return redirect(url_for('endpoints'))
     else:
         return redirect(url_for('403'))

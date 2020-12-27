@@ -242,6 +242,7 @@ def newTraining(username,name,file,password):
 	if user.check_password(password):
 		if user.enable:
 			files = {'file': file}
+
 			res = requests.post(f'{APISERVER}/api/training/{name}',files=files)
 
 			if res.status_code == 201:
@@ -358,19 +359,34 @@ def newEndpoint(username,name,training_id,password):
 
 	if user.check_password(password):
 		if user.enable:
-			res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json = { 'name': name, 'training_id' : training_id })
+			db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+			cur = db.cursor()
+			cur.execute('SELECT * FROM user_object_id WHERE object_id =%s AND object_type=%s AND user_name=%s',(training_id,"training", user.username,))
+			training = cur.fetchone()
+			db.close()
 
-			if res.status_code == 201:
-
-				db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
-				cur = db.cursor()
-				cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (endpoint_id, "endpoint", user.username,))
-				db.commit()
-				db.close()
-				click.echo('Endpoint created\n')
-				click.echo(res.content)
+			if training == None:
+				click.echo('Invalid training id')
 			else:
-				click.echo(res.status_code)
+				training_id = training[1]
+
+				res = requests.post(f'{APISERVER}/api/endpoints/endpoint', json = { 'name': name, 'training_id' : training_id })
+
+				if res.status_code == 201:
+
+					dates = json.loads(res.text)
+					endpoint_id = dates.get('id')
+
+					db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+					cur = db.cursor()
+					cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (endpoint_id, "endpoint", user.username,))
+					db.commit()
+					db.close()
+					
+					click.echo('Endpoint created\n')
+					click.echo(res.content)
+				else:
+					click.echo(res.status_code)
 		else:
 			click.echo('You can\'t create endpoint')
 	else:
