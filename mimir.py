@@ -48,7 +48,7 @@ def list_users(username, password):
 
 
 @cli.command('make-admin')
-@click.argument('email')
+@click.option('--email', prompt='Insert new admin\'s email')
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
 def promote_user(email,username,password):
@@ -118,7 +118,7 @@ def notebooks(username,password):
 
 
 @cli.command('create-notebook')
-@click.argument('name')
+@click.option('--name', prompt='Notebook name')
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
 def newNotebook(username,name,password):
@@ -152,7 +152,7 @@ def newNotebook(username,name,password):
 
 
 @cli.command('delete-notebook')
-@click.argument('id_to_delete')
+@click.option('--id_to_delete', prompt="Notebook id")
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
 def deleteNotebook(username,id_to_delete,password):
@@ -231,8 +231,8 @@ def trainings(username,password):
 
 
 @cli.command('create-training')
-@click.argument('name')
 @click.argument('file', type=click.File('r'))
+@click.option('--name', prompt="Training name")
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
 def newTraining(username,name,file,password):
@@ -268,7 +268,7 @@ def newTraining(username,name,file,password):
 
 
 @cli.command('delete-training')
-@click.argument('id_to_delete')
+@click.option('--id_to_delete',prompt="Training id")
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
 def deleteTraining(username,id_to_delete,password):
@@ -349,8 +349,8 @@ def endpoints(username,password):
 
 
 @cli.command('create-endpoint')
-@click.argument('name')
-@click.argument('training_id')
+@click.option('--name', prompt="Enpoint name")
+@click.option('--training_id', prompt="Training id")
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
 def newEndpoint(username,name,training_id,password):
@@ -395,7 +395,7 @@ def newEndpoint(username,name,training_id,password):
 
 
 @cli.command('delete-endpoint')
-@click.argument('id_to_delete')
+@click.option('--id_to_delete', prompt="Endpoint id")
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
 def deleteTraining(username,id_to_delete,password):

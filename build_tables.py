@@ -10,4 +10,4 @@ OBJECTS = []
 
 config.createTables()
 
-print("Tables created")
+print('Tables created')
