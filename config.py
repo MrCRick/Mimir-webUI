@@ -7,7 +7,7 @@ MYSQL_HOST=os.environ.get("MYSQL_HOST")
 MYSQL_PSSW=os.environ.get("MYSQL_PASSWORD")
 MYSQL_USER=os.environ.get("MYSQL_USER")
 MYSQL_URL=os.environ.get("MYSQL_URL")
-
+UPLOAD_FILE = os.environ.get("UPLOAD_FILE")
 APISERVER = os.environ.get("APISERVER")
 
 basedir = os.path.abspath(os.path.dirname(__file__))

@@ -48,7 +48,7 @@ def list_users(username, password):
 
 
 @cli.command('make-admin')
-@click.option('--email', prompt='Insert new admin\'s email')
+@click.option('--email', prompt='Admin email')
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
 def promote_user(email,username,password):

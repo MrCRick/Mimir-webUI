@@ -49,8 +49,9 @@
 			<tr>
 				<th>ID</th>
 				<th>Name</th>
-				<th>File_name</th>
-				<th>Endpoint_count</th>
+				<th>File name</th>
+				<th>File path</th>
+				<th>Endpoint count</th>
 				<th>Created Time</th>
 				<th>Status</th>
 				<th>Delete</th>
@@ -59,7 +60,8 @@
 			<tr>
 				<td>{{ training['id'] }}</td>
 				<td>{{ training['name'] }}</td>
-				<td>{{ training['filename'] }}</td>
+				<td>{{ training['file_name'] }}</td>
+				<td>{{ training['file_path']}}</td>
 				<td>{{ training['endpoints_count'] }}</td>
 				<td>{{ training['created_date'] }}</td>
 				<td>{{ training['status'] }}</td>

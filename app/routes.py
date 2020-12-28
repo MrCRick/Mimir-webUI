@@ -18,6 +18,7 @@ APISERVER = os.environ.get("APISERVER")
 UPLOAD_FILE = os.environ.get("UPLOAD_FILE")
 
 
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -207,7 +208,7 @@ def newTraining():
         file = request.files['file']
         filename = file.filename
         upload_file = os.environ.get("UPLOAD_FILE")
-        #open mi permette di selezionare il path da dove poter prendere il file
+
         files={'file': (open(upload_file + filename, 'r'))}
 
         res = requests.post(f'{APISERVER}/api/training/{name}',files=files)

@@ -1,6 +1,6 @@
 # Mimir-webUI
 
-Mimir-webUI is a web application used to create notebooks, training, and (in the future) endpoints.
+Mimir-webUI is a web application used to create notebooks, trainings, and (in the future) endpoints.
 
 How to Use
 ==========
@@ -60,7 +60,16 @@ Create some variables to connect WebUI to Api Server:
     
 At the end set variables: 
 
-	export APISERVER="ip address of the api server that you choice"
+	export MYSQL_HOST="mysql host"
+	export MYSQL_USER="mysql user"
+	export MYSQL_PASSWORD="mysql password"
+	export MYSQL_URL=mysql+pymysql://"mysql user":"mysql password"@"mysql host"/
+	export DOMAIN_NAME=.notebooks.kubernetes.local
+	export CELERY_BROKER=pyamqp://guest@localhost//
+	export CELERY_BACKEND=rpc://
+	export APISERVER=http://"api server ip address and port"
+	export PATH_FOLDER="where download file for training"
+	export UPLOAD_FILE="where upload file for training"
 
 Save the changes:
 	

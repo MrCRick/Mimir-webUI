@@ -47,9 +47,7 @@
 				<th>Training ID</th>
 				<th>Training Name</th>
 				<th>Training filename</th>
-				<th>Endpoint Count</th>
-				<th>Training Created Time</th>
-				<th>Training Status</th>
+				<th>Training file path</th>
 				<th>Delete</th>
 			</tr>
 			{% for endpoint in endpoints %}
@@ -61,10 +59,9 @@
 
 				<td>{{ endpoint.training['id'] }}</td>
 				<td>{{ endpoint.training['name'] }}</td>
-				<td>{{ endpoint.training['filename'] }}</td>
-				<td>{{ endpoint.training['endpoints_count'] }}</td>
-				<td>{{ endpoint.training['created_date'] }}</td>
-				<td>{{ endpoint.training['status'] }}</td>
+				<td>{{ endpoint.training['file_name'] }}</td>
+				<td>{{ endpoint.training['file_path'] }}</td>
+
 				<td>
 					<form action="/deleteEndpoint" method="post">
 						<input type="submit"  value="Delete">
