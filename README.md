@@ -1,6 +1,6 @@
 # Mimir-webUI
 
-Mimir-webUI is a web application used to create notebooks, trainings, and (in the future) endpoints.
+Mimir-webUI is a web application used to create notebooks, trainings, and (in the future) endpoints. 
 
 How to Use
 ==========
@@ -10,22 +10,12 @@ Prerequisites
 
 You need to install:
 
-Miniconda:
+	Python
+	MySQL
+	Pip
+	Pipenv
 
-https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 
-MySQL:
-
-https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
-
-Pip: 
-
-    $ sudo apt install python-pip
-    
-Pipenv:
-
-    $ pip install pipenv
-   
 
 Create virtual environment
 --------------------------
@@ -38,17 +28,17 @@ Create a virtual env with command:
 
     $ pipenv shell
    
-   
+
+
 Create database
 ---------------
 
-First following this repository to create mimir DataBase: https://github.com/dandamico/Mimir-ApiServer.git
+In terminal of your Mimir-webUI virtual env:
 
-Then in terminal of your Mimir-webUI virtual env:
+	$ python build_DB.py
 
-	$ python build_tables.py
+Now you created your mimir DB.
 
-Now you created two tables in mimir DB.
 
 
 Set environment variables
@@ -103,7 +93,7 @@ can see other commands.
 And then..
 ----------
 
-Now in order for this performance to work, you need to download two more Git repository: Mimir-ApiServer and Mimir-Engine:
+Now in order for everything to work, you need to download two more Git repository:
 
 1 Mimir-ApiServer: https://github.com/dandamico/Mimir-ApiServer
 
