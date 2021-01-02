@@ -1,0 +1,60 @@
+- CREAZIONE DI UNA FLASK APP
+- INSERIRE LA REGISTRAZIONE DI UN UTENTE
+- INSERIRE IL LOGIN DI UN UTENTE
+- PERMETTERE LA REGISTRAZIONE DEGLI UTENTI IN UN DB
+- CREAZIONE DI VARIE PAGINE HTML
+
+(TUTTO QUESTO STA NEL MEGA-TUTORIAL DI FLASK:
+https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
+
+- PERMETTERE TRAMITE UNA ACL DI POTER VEDERE DETERMINATE PAGINE
+- COLLEGARE LA WEBUI ALL'APISERVER
+- CREARE INTERFACCIA GRAFICA PER POTER CREARE, DISTRUGGERE E VEDERE TUTTI I NOTEBOOK, TRAINING ED ENDPOINT
+- CREARE COMANDI DALLA CLI AFFINCHÈ SI POSSA CREARE, DISTRUGGERE, VEDERE TUTTI I NOTEBOOK E TRAINING, VEDERE LA LISTA DEGLI UTENTI E FAR DIVENTARE ADMIN UN UTENTE
+
+
+
+
+
+
+
+MODIFICHE DA APPORTARE ALLA WEBUI:
+
+- modificare la form dell'utente affinchè si registri solo tramite l'email ed eliminare username; (FATTO)
+
+- modificare la form dei training e bisogna aggiungere alcune cose:
+	1 file di addestramento;
+	2 poter specifiare la tecnologia con cui si tira su (scikit-learn);
+	3 file di dati che federico carica e scarica per fare addestramento;
+
+- l'admin deve:
+	1 avere un pannello in più; (FATTO)
+	2 poter eliminare gli utenti; (FATTO)
+	3 poter disabilitare gli utenti; (FATTO)
+	4 poter far diventare un utente, un admin; (FATTO)
+	
+- gli utenti devono partire disabilitati; (FATTO)
+
+- poter dare il controllo a qualcuno e farlo diventare admin;(FATTO)
+
+- ci deve essere un modo dalla CLI per accedere se tutti gli admin sono out;	(FATTO)
+
+
+- Passare tramite una variabile d'ambiente l'indirizzo dell'api server; (FATTO)
+
+- Effettuo una chiamata HTTP verso l'api server tramite il modulo requests da python:
+	- GET		(FATTO)
+	- POST		(FATTO)
+	- DELETE	(FATTO)
+
+
+
+- DOMANDE DA FARE AD ALBERTO:
+	- devo differenziare il fatto che ottengo per tutti gli utenti gli stessi notebook,training ed endpoint che ho creato?
+
+- COMPITI DA TERMINARE:
+	- fare in modo che ai comandi della cli possano accedere solo chi è abilitato.
+
+
+
+

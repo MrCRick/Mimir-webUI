@@ -5,6 +5,7 @@ from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 import mysql.connector as mysql
+import zipfile
 import requests
 import json
 import os
@@ -206,10 +207,11 @@ def newTraining():
     if current_user.enable:
         name = request.form['name']
         file = request.files['file']
-        filename = file.filename
         upload_file = os.environ.get("UPLOAD_FILE")
 
-        files={'file': (open(upload_file + filename, 'r'))}
+        file = open(upload_file + file.filename, 'r', encoding='unicode_escape')
+
+        files={'file': file}
 
         res = requests.post(f'{APISERVER}/api/training/{name}',files=files)
 
