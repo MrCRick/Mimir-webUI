@@ -5,6 +5,8 @@ import requests
 import json
 import os
 import click
+import zipfile
+
 
 
 
@@ -13,6 +15,7 @@ MYSQL_HOST=os.environ.get("MYSQL_HOST")
 MYSQL_PSSW=os.environ.get("MYSQL_PASSWORD")
 MYSQL_USER=os.environ.get("MYSQL_USER")
 MYSQL_URL=os.environ.get("MYSQL_URL")
+UPLOAD_FILE = os.environ.get("UPLOAD_FILE")
 
 
 
@@ -241,6 +244,11 @@ def newTraining(username,name,file,password):
 
 	if user.check_password(password):
 		if user.enable:
+			upload_file = os.environ.get("UPLOAD_FILE")
+			if zipfile.is_zipfile(file.read()):
+				with zipfile.ZipFile(upload_file + file.read(), 'r') as my_zip:
+					my_zip.extract(file.read(),path= upload_file)
+
 			files = {'file': file}
 
 			res = requests.post(f'{APISERVER}/api/training/{name}',files=files)
