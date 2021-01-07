@@ -234,7 +234,7 @@ def trainings(username,password):
 
 
 @cli.command('create-training')
-@click.argument('file', type=click.File('r'))
+@click.argument('file', type=click.File('rb'))
 @click.option('--name', prompt="Training name")
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
@@ -245,9 +245,6 @@ def newTraining(username,name,file,password):
 	if user.check_password(password):
 		if user.enable:
 			upload_file = os.environ.get("UPLOAD_FILE")
-			if zipfile.is_zipfile(file.read()):
-				with zipfile.ZipFile(upload_file + file.read(), 'r') as my_zip:
-					my_zip.extract(file.read(),path= upload_file)
 
 			files = {'file': file}
 
