@@ -210,10 +210,7 @@ def newTraining():
         filename = file.filename
         upload_file = os.environ.get("UPLOAD_FILE")
 
-        file = open(upload_file + file.filename, 'r', encoding='unicode_escape')
-        if zipfile.is_zipfile(filename):
-            with zipfile.ZipFile(upload_file + filename, 'r') as my_zip:
-                my_zip.extract(filename,path= upload_file)
+        file = open(upload_file + file.filename, 'rb')
 
         files={'file': file}
 
