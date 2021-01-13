@@ -1,4 +1,13 @@
-python
-pipenv
 flask
-mysql
+flask-sqlalchemy
+flask-login
+flask-wtf
+email-validator
+flask-restful
+python-dotenv
+flask-admin
+flask-httpauth
+requests
+pymysql
+cryptography
+mysql-connector-python-rf
