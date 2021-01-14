@@ -7,14 +7,14 @@ COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 
 ENV FLASK_ENV=deployment
-ENV MYSQL_HOST=172.30.0.2
-ENV MYSQL_USER=rick
-ENV MYSQL_DATABASE=mimir
-ENV MYSQL_PASSWORD=password
-ENV MYSQL_URL=mysql+pymysql://rick:password@172.30.0.2/
+
+ENV MYSQL_USER=root
+ENV MYSQL_DB=mimir
+ENV MYSQL_HOST=mysql
+ENV MYSQL_PASSWORD=secret
 
 RUN pip3 install -r requirements.txt
-
+RUN pip3 install --editable .
 COPY . /app
 
 CMD flask run -h 0.0.0.0 -p 5000

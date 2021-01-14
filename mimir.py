@@ -120,7 +120,7 @@ def notebooks(username,password):
 
 
 
-@cli.command('create-notebook')
+@cli.command('notebook-create')
 @click.option('--name', prompt='Notebook name')
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
@@ -154,7 +154,7 @@ def newNotebook(username,name,password):
 
 
 
-@cli.command('delete-notebook')
+@cli.command('notebook-delete')
 @click.option('--id_to_delete', prompt="Notebook id")
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
@@ -233,7 +233,7 @@ def trainings(username,password):
 
 
 
-@cli.command('create-training')
+@cli.command('training-create')
 @click.argument('file', type=click.File('rb'))
 @click.option('--name', prompt="Training name")
 @click.option('--username', prompt=True)
@@ -272,7 +272,7 @@ def newTraining(username,name,file,password):
 
 
 
-@cli.command('delete-training')
+@cli.command('training-delete')
 @click.option('--id_to_delete',prompt="Training id")
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
@@ -353,7 +353,7 @@ def endpoints(username,password):
 
 
 
-@cli.command('create-endpoint')
+@cli.command('endpoint-create')
 @click.option('--name', prompt="Enpoint name")
 @click.option('--training_id', prompt="Training id")
 @click.option('--username', prompt=True)
@@ -399,7 +399,7 @@ def newEndpoint(username,name,training_id,password):
 
 
 
-@cli.command('delete-endpoint')
+@cli.command('endpoint-delete')
 @click.option('--id_to_delete', prompt="Endpoint id")
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
