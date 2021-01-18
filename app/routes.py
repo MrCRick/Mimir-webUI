@@ -14,7 +14,6 @@ import os
 MYSQL_HOST=os.environ.get("MYSQL_HOST")
 MYSQL_PSSW=os.environ.get("MYSQL_PASSWORD")
 MYSQL_USER=os.environ.get("MYSQL_USER")
-MYSQL_URL=os.environ.get("MYSQL_URL")
 APISERVER = os.environ.get("APISERVER")
 UPLOAD_FILE = os.environ.get("UPLOAD_FILE")
 

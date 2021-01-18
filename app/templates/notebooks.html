@@ -55,8 +55,8 @@
 			<tr>
 				<td>{{ notebook['id'] }}</td>
 				<td>{{ notebook['name'] }}</td>
-				<td>{{ "jupyter" }}</td>
-				<td>{{ "jupyter/minimal-notebook" }}</td>
+				<td>{{ notebook['deployment_name'] }}</td>
+				<td>{{ notebook['docker_image_name'] }}</td>
 				<td><a href="http://pippo-1.notebooks.kubernetes.local/tree?">{{ notebook['notebook_url'] }}</a></td>
 				<td>{{ notebook['created_date'] }}</td>
 				<td>{{ notebook['status'] }}</td>
