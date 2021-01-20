@@ -14,6 +14,7 @@ import os
 MYSQL_HOST=os.environ.get("MYSQL_HOST")
 MYSQL_PSSW=os.environ.get("MYSQL_PASSWORD")
 MYSQL_USER=os.environ.get("MYSQL_USER")
+MYSQL_DB=os.environ.get("MYSQL_DB")
 APISERVER = os.environ.get("APISERVER")
 UPLOAD_FILE = os.environ.get("UPLOAD_FILE")
 
@@ -75,7 +76,7 @@ def user(username):
 def notebooks():
     if current_user.enable:
 
-        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
         cur = db.cursor()
         cur.execute('SELECT * FROM user_object_id')
         objects = cur.fetchall()
@@ -117,7 +118,7 @@ def newNotebook():
             dates = json.loads(res.text)
             notebook_id = dates.get('id')
 
-            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
             cur = db.cursor()
             cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (notebook_id, "notebook", current_user.username,))
             db.commit()
@@ -138,7 +139,7 @@ def deleteNotebook():
     if current_user.enable:
         id_to_delete = request.form['id_to_delete']
 
-        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
         cur = db.cursor()
         cur.execute('SELECT * FROM user_object_id WHERE user_name = %s AND object_id = %s', (current_user.username, id_to_delete))
         notebook_to_delete = cur.fetchone()
@@ -149,7 +150,7 @@ def deleteNotebook():
 
             if res.status_code == 200:
 
-                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
                 cur = db.cursor()
                 cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"notebook",))
                 db.commit()
@@ -169,7 +170,7 @@ def deleteNotebook():
 def trainings():
     if current_user.enable:
 
-        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
         cur = db.cursor()
         cur.execute('SELECT * FROM user_object_id')
         objects = cur.fetchall()
@@ -219,7 +220,7 @@ def newTraining():
             dates = json.loads(res.text)
             training_id = dates.get('id')
 
-            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+            db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
             cur = db.cursor()
             cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (training_id, "training", current_user.username,))
             db.commit()
@@ -241,7 +242,7 @@ def deleteTraining():
 
         id_to_delete = request.form['id_to_delete']
 
-        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
         cur = db.cursor()
         cur.execute('SELECT * FROM user_object_id WHERE user_name = %s AND object_id = %s', (current_user.username, id_to_delete))
         training_to_delete = cur.fetchone()
@@ -252,7 +253,7 @@ def deleteTraining():
 
             if res.status_code == 200:
 
-                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
                 cur = db.cursor()
                 cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"training",))
                 db.commit()
@@ -272,7 +273,7 @@ def deleteTraining():
 def endpoints():
     if current_user.enable:
 
-        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
         cur = db.cursor()
         cur.execute('SELECT * FROM user_object_id')
         objects = cur.fetchall()
@@ -310,7 +311,7 @@ def newEndpoint():
         name = request.form['name']
         training_id = request.form['training_id']
 
-        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
         cur = db.cursor()
         cur.execute('SELECT * FROM user_object_id WHERE object_id =%s AND object_type=%s AND user_name=%s',(training_id,"training", current_user.username,))
         training = cur.fetchone()
@@ -327,7 +328,7 @@ def newEndpoint():
                 dates = json.loads(res.text)
                 endpoint_id = dates.get('id')
 
-                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
                 cur = db.cursor()
                 cur.execute('INSERT INTO user_object_id (object_id, object_type, user_name) VALUES (%s,%s,%s)', (endpoint_id, "endpoint", current_user.username,))
                 db.commit()
@@ -350,7 +351,7 @@ def deleteEndpoint():
 
         id_to_delete = request.form['id_to_delete']
 
-        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+        db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
         cur = db.cursor()
         cur.execute('SELECT * FROM user_object_id WHERE user_name = %s AND object_id = %s', (current_user.username, id_to_delete))
         endpoint_to_delete = cur.fetchone()
@@ -361,7 +362,7 @@ def deleteEndpoint():
 
             if res.status_code == 200:
 
-                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database='mimir')
+                db = mysql.connect(host=MYSQL_HOST,user=MYSQL_USER,password=MYSQL_PSSW,database=MYSQL_DB)
                 cur = db.cursor()
                 cur.execute('DELETE FROM user_object_id WHERE object_id = %s AND object_type = %s', (id_to_delete,"endpoint",))
                 db.commit()
