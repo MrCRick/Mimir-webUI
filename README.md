@@ -63,8 +63,7 @@ At the end set variables:
 	export ENDPOINT=http://192.168.49.2:31000
 	export BUCKET=bucket
 	export APISERVER=http://"api server ip address and port"
-	export PATH_FOLDER="where download file for training"
-	export UPLOAD_FILE="where upload file for training"
+	export UPLOAD_FILE="where download file for training"
 
 Save the changes:
 	
@@ -140,10 +139,10 @@ Create a new network:
 Create and run container for mysql:
 
 	$ docker run -d \
-		--name mimir_webui_container \
+		--name mimir_db \
 		--network mimir_network --network-alias mysql \
 		-e MYSQL_ROOT_PASSWORD="mysql password" \
-		-e MYSQL_DATABASE="mysql database name" \
+		-e MYSQL_DATABASE=mimir \
 		mysql
 
 
@@ -159,6 +158,8 @@ Now create a container Docker:
 
 	$ docker run -dp 5000:5000 \
 		--network mimir_network \
+		--name mimir_webui \
+		-v "directory name on your pc":"directory name in your container" \
 		-e FLASK_ENV=deployment \
 		-e MYSQL_HOST= "mysql host" \
 		-e MYSQL_USER= "mysql user" \
@@ -166,8 +167,7 @@ Now create a container Docker:
 		-e MYSQL_DB=mimir \
 		-e MYSQL_URL=mysql+pymysql://"mysql user":"mysql password"@mysql/mimir \
 		-e APISERVER=http://"apiserver container name":"apiserver port" \
-		-e PATH_FOLDER=/"path where download file for training" \
-		-e UPLOAD_FILE=/"path where upload file for training" \
+		-e UPLOAD_FILE=/"path where download file for training" \
 		mimir_webui
 
 Now with command:
@@ -176,9 +176,17 @@ Now with command:
 
 You can see 2 new container: mimir_webui_container and mysql.
 
-Run the command to start the container:
+Must to create mimir db:
 
-	$ docker logs -f mimir_webui_container
+	$ docker exec -it mimir_webui bash
+
+In the docker container:
+
+	$ python3 build_database.py
+
+Exit from the container and run the command to start the container:
+
+	$ docker logs -f mimir_webui
 
 
 For everything to work, you need an active api server.

@@ -207,12 +207,13 @@ def newTraining():
     if current_user.enable:
         name = request.form['name']
         file = request.files['file']
-        filename = file.filename
         upload_file = os.environ.get("UPLOAD_FILE")
 
-        file = open(upload_file + file.filename, 'rb')
+        file_path = os.path.join(upload_file, file.filename)
+        
+        file.save(file_path)
 
-        files={'file': file}
+        files={'file': open(file_path, 'rb')}
 
         res = requests.post(f'{APISERVER}/api/training/{name}',files=files)
 
