@@ -5,8 +5,6 @@ import requests
 import json
 import os
 import click
-import zipfile
-
 
 
 
