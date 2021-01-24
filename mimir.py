@@ -13,7 +13,7 @@ MYSQL_HOST=os.environ.get("MYSQL_HOST")
 MYSQL_PSSW=os.environ.get("MYSQL_PASSWORD")
 MYSQL_USER=os.environ.get("MYSQL_USER")
 MYSQL_DB=os.environ.get("MYSQL_DB")
-UPLOAD_FILE = os.environ.get("UPLOAD_FILE")
+UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
 
 
 
@@ -242,10 +242,12 @@ def newTraining(username,name,file,password):
 
 	if user.check_password(password):
 		if user.enable:
-			upload_file = os.environ.get("UPLOAD_FILE")
+			upload_file = os.environ.get("UPLOAD_FOLDER")
 
 			files = {'file': file}
-
+			print(upload_file)
+			print(file)
+			print(files)
 			res = requests.post(f'{APISERVER}/api/training/{name}',files=files)
 
 			if res.status_code == 201:

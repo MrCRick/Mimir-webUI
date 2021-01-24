@@ -63,7 +63,7 @@ At the end set variables:
 	export ENDPOINT=http://192.168.49.2:31000
 	export BUCKET=bucket
 	export APISERVER=http://"api server ip address and port"
-	export UPLOAD_FILE="where download file for training"
+	export UPLOAD_FOLDER="where download file for training"
 
 Save the changes:
 	
@@ -167,7 +167,7 @@ Now create a container Docker:
 		-e MYSQL_DB=mimir \
 		-e MYSQL_URL=mysql+pymysql://"mysql user":"mysql password"@mysql/mimir \
 		-e APISERVER=http://"apiserver container name":"apiserver port" \
-		-e UPLOAD_FILE=/"path where download file for training" \
+		-e UPLOAD_FOLDER=/"path where download file for training" \
 		mimir_webui
 
 Now with command:

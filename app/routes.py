@@ -15,7 +15,7 @@ MYSQL_PSSW=os.environ.get("MYSQL_PASSWORD")
 MYSQL_USER=os.environ.get("MYSQL_USER")
 MYSQL_DB=os.environ.get("MYSQL_DB")
 APISERVER = os.environ.get("APISERVER")
-UPLOAD_FILE = os.environ.get("UPLOAD_FILE")
+UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
 
 
 
@@ -206,7 +206,7 @@ def newTraining():
     if current_user.enable:
         name = request.form['name']
         file = request.files['file']
-        upload_file = os.environ.get("UPLOAD_FILE")
+        upload_file = os.environ.get("UPLOAD_FOLDER")
 
         file_path = os.path.join(upload_file, file.filename)
         
